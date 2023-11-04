@@ -1,0 +1,2 @@
+git doesn't recognize empty directories for tracking.
+Remove this file when a new file is added to the immediate parent directory.
