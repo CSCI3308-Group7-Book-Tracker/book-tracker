@@ -1,0 +1,3 @@
+Release Notes for First Weekly Meeting.
+
+Added header, footer, and menu partials. User stories are updated. Everyone has repositories, and has made commits. The login and register pages have been added. Index.js is partially configured for the login purposes. We have started to plan out our database and are implementing it in the meantime. 
