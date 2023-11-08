@@ -4,7 +4,7 @@
   <div class="container">
     <h1>Explore</h1>
     <div id="search_bar">
-        <form action="/search" method="POST">
+        <form action="/search" method="GET">
             <div class="mb-3">
               <label for="title" class="form-label">Title:</label>
               <input type="text" id="title" name="title" class="form-control" />
@@ -13,7 +13,23 @@
           </form>
     </div>
     <div id="book_table">
-
+        <table>
+            <tr><th>Title</th><th>Author</th><th>Date Published</th><th>Cover</th></tr>
+            <%
+                if(books)
+                {
+                    var rows = '';
+                    books.forEach(function(item)
+                            {
+                                rows += "<tr><td>" + item.title + "</td><td>" + item.author + "</td><td>" + item.published + "</td><td>" + item.img + "</td></tr>";
+                            }
+                    );
+                }
+            %>
+            <%- rows %>
+           
+        </table>
+    
     </div>
   </div>
 </main>
