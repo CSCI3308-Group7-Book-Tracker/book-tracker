@@ -1,3 +1,7 @@
 Release Notes for First Weekly Meeting.
 
 Added header, footer, and menu partials. User stories are updated. Everyone has repositories, and has made commits. The login and register pages have been added. Index.js is partially configured for the login purposes. We have started to plan out our database and are implementing it in the meantime. 
+
+Epics:
+1) Using the Reviews feture. A user should be able to log in to the site. They should see the reviews that they have made. Then, they should be able to see other reviews that exist for a particular book. Then, they can log out of their account.
+2) User accounts. A user should be able to log in. They should see all of the information from all of their previous actions within that account. Their password should be secure and they should be able to log out.
