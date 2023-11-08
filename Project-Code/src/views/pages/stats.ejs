@@ -1,0 +1,28 @@
+<main>
+    <title>Stats about your book !</title>
+  <div class="container mx-auto row">
+    <!-- THE REST OF YOUR HTML CODE GOES HERE -->
+
+        <div class="col" style="width:fit-content">
+            <div id="bookStats">
+                <!-- REPLACE THIS WITH SQL DATA WE RECIEVE<% console.log(search_results.data._embedded.events[0])%> -->
+                            <img src=<%-result.images[0].url %> class="card-img-top" alt="...">
+                            <div class="column"> 
+                            <div class="card-body">
+                            <!-- REPLACE THIS WITH book title -->    <h5 class="card-title"><%-result.name %></h5>
+                            <!-- REPLACE THIS WITH book release date -->   <p class="card-date"><%-result.dates.start.localDate %></p>
+                            <!-- REPLACE THIS WITH book page #-->   <p class="card-time"><%-result.dates.start.localTime %></p>
+                            <!-- REPLACE THIS WITH book author -->   <p class="card-time"><%-result.dates.start.localTime %></p>
+                            <!-- REPLACE THIS WITH book reviews -->    <p class="card-time"><%-result.dates.start.localTime %></p>
+                            <!-- REPLACE THIS WITH checkout button --> <a href="<%-result.url %>" class="btn btn-primary">checkout</a>
+                            </div>
+                          </div>
+                        </div>
+      </div>
+  </div>
+</td>
+
+
+        
+  </div>
+</main>
