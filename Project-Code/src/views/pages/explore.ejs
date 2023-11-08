@@ -1,0 +1,21 @@
+<%- include ('../partials/header') %> <%- include ('../partials/menu') %>
+
+<main>
+  <div class="container">
+    <h1>Explore</h1>
+    <div id="search_bar">
+        <form action="/search" method="POST">
+            <div class="mb-3">
+              <label for="title" class="form-label">Title:</label>
+              <input type="text" id="title" name="title" class="form-control" />
+            </div>      
+            <button type="submit" class="btn btn-primary">Search</button>
+          </form>
+    </div>
+    <div id="book_table">
+
+    </div>
+  </div>
+</main>
+
+<%- include ('../partials/footer') %>
