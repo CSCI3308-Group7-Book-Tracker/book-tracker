@@ -1,1 +1,20 @@
-1) Explore feature
+1) Reviews
+We will test this by having a sample user log into their account and test and endpoint that will store the user review in the database. As an example, the user could review The Great Gatsby with 3.2 out of 5 stars. This test will be considered passing if the review is properly stored in the database. 
+
+We will also test this by having a sample user view the reviews left on another book. If they can see the reviews, which should be stored in the database and averaged to display the net review, the test case will be passed. 
+
+The data used will be reviews of books. This information is stored in the database. There will be a reviews table, and these reviews will also be linked to users with a foreign key. Thus, these will both need to be tested to ensure accuracy. We will use Mocha and Chai for these tests. Sample dummy users will be created and used to conduct these tests. 
+
+2) Explore Page
+Test Cases:
+Users should be able to view a grid of cards displaying an image, name, and genre of a book on each card.
+Users should be able to filter the results by genre or title
+Users should be able to click on a card in order to view more information about the book
+Clicking the ‘add’ button will add the book to the profile page
+	Acceptance Criteria:
+Image, name, genre, are displayed for each book on the explore grid
+Each book’s link navigates to a site/page with more information
+Each add button adds the correct information to the database
+
+3) Stats Page
+	In the stats page a user should see accurate data on the book of their choice. When a user clicks on a book on the explore page another page should pop up to show them the book author, page numbers, date of release etc. We will test this feature by searching up a book that we have accurate data on and comparing it to our own results to see if they match. We will be using mocha and chai to test this feature to see if the page is loading correctly and with accurate information. Sample dummy users will be created and used to conduct these tests. 
