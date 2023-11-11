@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE IF NOT EXISTS users (
   user_id SERIAL PRIMARY KEY NOT NULL,
-  username VARCHAR(100) NOT NULL,
+  username VARCHAR(100) UNIQUE NOT NULL,
   password CHAR(60) NOT NULL,
   books_read INT NOT NULL,
   reviews_left INT NOT NULL

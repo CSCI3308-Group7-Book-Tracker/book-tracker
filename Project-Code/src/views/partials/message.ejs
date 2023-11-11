@@ -1,0 +1,9 @@
+<% if (locals.message) { %>
+    <div
+      class="alert alert-<%- locals.error ? 'danger' : 'success' %> text-center"
+      style="margin-top: 15px;"
+      role="alert">
+      <%= message %>
+    </div>
+<% } %>
+    

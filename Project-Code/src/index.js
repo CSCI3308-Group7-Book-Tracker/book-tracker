@@ -4,26 +4,16 @@
 
 const express = require('express'); // To build an application server or API
 const app = express();
-const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
 
+const { db } = require('./databaseModule');
+
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
-
-// database configuration
-const dbConfig = {
-  host: 'db', // the database server
-  port: 5432, // the database port
-  database: process.env.POSTGRES_DB, // the database name
-  user: process.env.POSTGRES_USER, // the user account to connect with
-  password: process.env.POSTGRES_PASSWORD, // the password of the user account
-};
-
-const db = pgp(dbConfig);
 
 // test your database
 db.connect()
@@ -62,7 +52,9 @@ app.use(
 // *****************************************************
 const user = {
   username: undefined,
-  password: undefined
+  password: undefined,
+  books_read: undefined,
+  reviews_left: undefined
 };
 
 // TODO - Include your API routes here
@@ -81,26 +73,24 @@ app.get('/register', (req,res) => {
 app.post('/register', async (req,res) => {
     const username = req.body.username;
     const hash = await bcrypt.hash(req.body.password, 10);
-    const query = "INSERT INTO users(username, password) VALUES ($1, $2) RETURNING *;";
+    const query = "INSERT INTO users(username, password, books_read, reviews_left) VALUES ($1, $2, $3, $4) RETURNING *;";
 
-    await db.one(query, [username, hash])
+    await db.one(query, [username, hash, 0, 0])
       .then(() => {
           res.redirect('/login')
       })
       .catch((err) => {
-        // console.log(err);
-        // console.log(err.code);
         // user already exists, redirect to login
         if (err.code == 23505) {
-          res.render('pages/login', {
+          res.status(409).render('pages/login', {
             error: true,
             message: 'User already exists. Login instead.'
           });
         } else {
           // only other error comes from too long username
-          res.render('pages/register', {
+          res.status(431).render('pages/register', {
             error: true,
-            message: 'username cannot exceed 50 characters'
+            message: 'Username cannot exceed 100 characters'
           });
         } 
       });
@@ -121,12 +111,14 @@ app.post('/login', async (req,res) => {
     
             req.session.user = user;
             req.session.save();
-            res.redirect("/discover");
+            res.redirect('/login');
           } else {
-            res.render('pages/login', {
+            res
+              .status(401)
+              .render('pages/login', {
               error: true,
-              message: 'Wrong Password, Try Again Please.'
-            })
+              message: 'Wrong Password, Try Again Please.'}
+            );
           }
         })
         .catch((bcryptError) => {
@@ -137,10 +129,13 @@ app.post('/login', async (req,res) => {
     .catch((err) => {
       // console.log(err);
       if (err.message === 'No data returned from the query.') {
-        res.render('pages/register', {
-          error: true,
-          message: 'User does not exist. Register instead.'
-        })
+        res
+          .status(404)
+          .render('pages/register', {
+            error: true,
+            message: 'User does not exist. Register instead.'
+          }
+        );
       } else {
         res.redirect("/login");
       }
@@ -173,5 +168,5 @@ app.get("/logout", (req, res) => {
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-app.listen(3000);
+module.exports = app.listen(3000);
 console.log('Server is listening on port 3000');
