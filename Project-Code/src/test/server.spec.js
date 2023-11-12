@@ -1,7 +1,7 @@
 // Imports the index.js file to be tested.
 const server = require('../index'); //TO-DO Make sure the path to your index.js is correctly added
 // Importing libraries
-const bcrypt = require('bcrypt'); //  To hash passwords
+const bcrypt = require('bcryptjs'); //  To hash passwords
 const sinon = require('sinon'); // Sinon for mock db insert testing
 const { databaseModule } = require('../databaseModule');
 // Chai HTTP provides an interface for live integration testing of the API's.

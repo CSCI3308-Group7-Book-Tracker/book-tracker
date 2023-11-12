@@ -3,7 +3,7 @@
     "main": "index.js",
     "dependencies": {
         "axios": "^1.1.3",
-        "bcrypt": "^5.1.0",
+        "bcryptjs": "^2.4.3",
         "body-parser": "1.20.0",
         "cheerio": "^1.0.0-rc.12",
         "ejs": "^3.1.8",
@@ -25,7 +25,8 @@
         "prestart": "npm install",
         "start": "node index.js",
         "dev": "nodemon server.js",
-        "test": "mocha",
+        "test:setup": "node ./test/test-setup.js",
+        "test": "npm run test:setup && mocha",
         "testandrun": "npm run prestart && npm run test && npm start"
     }
 }

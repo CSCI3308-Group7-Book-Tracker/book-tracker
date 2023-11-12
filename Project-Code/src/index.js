@@ -6,24 +6,17 @@ const express = require('express'); // To build an application server or API
 const app = express();
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
-const bcrypt = require('bcrypt'); //  To hash passwords
+const bcrypt = require('bcryptjs'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
 
 const { db } = require('./databaseModule');
+const { databaseModule } = require('./databaseModule');
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
 
-// test your database
-db.connect()
-  .then(obj => {
-    console.log('Database connection successful'); // you can view this message in the docker compose logs
-    obj.done(); // success, release the connection;
-  })
-  .catch(error => {
-    console.log('ERROR:', error.message || error);
-  });
+databaseModule.initializeDatabase();
 
 // *****************************************************
 // <!-- Section 3 : App Settings -->

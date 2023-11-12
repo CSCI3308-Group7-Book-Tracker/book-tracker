@@ -1,6 +1,7 @@
 // databaseModule.js
 
 const pgp = require('pg-promise')();
+const bcrypt = require('bcryptjs'); //  To hash passwords
 
 // database configuration
 const dbConfig = {
@@ -11,7 +12,7 @@ const dbConfig = {
     password: process.env.POSTGRES_PASSWORD, // the password of the user account
   };
   
-  const db = pgp(dbConfig);
+const db = pgp(dbConfig);
 
 const databaseModule = {
   insertUser: async (username, hashedPassword) => {
@@ -23,6 +24,36 @@ const databaseModule = {
       return result;
     } catch (error) {
       throw error;
+    }
+  },
+
+  initializeDatabase: async () => {
+    const isAdminUserExists = async () => {
+      const query = `SELECT COUNT(*) as count FROM users WHERE username = 'admin'`;
+    
+      const result = await db.one(query);
+      return result.count > 0;
+    };
+
+    try {
+      const obj = await db.connect();
+      console.log('Database connection successful');
+  
+      const adminUserExists = await isAdminUserExists();
+  
+      if (!adminUserExists) {
+        const hash = await bcrypt.hash('admin', 10);
+        const query = "INSERT INTO users(username, password, books_read, reviews_left) VALUES ($1, $2, $3, $4) RETURNING *;";
+  
+        await obj.query(query, ['admin', hash, 0, 0]);
+        console.log('Admin user added to database');
+      } else {
+        console.log('Admin user already exists. Skipping initialization');
+      }
+  
+      obj.done();
+    } catch (error) {
+      console.log('ERROR:', error.message || error);
     }
   },
 };
