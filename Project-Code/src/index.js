@@ -157,6 +157,40 @@ app.get("/logout", (req, res) => {
 });
 
 
+//render explore page initially
+app.get("/explore", (req, res) => {
+  res.render("pages/explore",{books:[]});
+});
+
+// explore page external api call
+
+app.post('/explore', auth, async (req, res)=>{
+  console.log(req.body);
+  axios({
+    url: `https://www.googleapis.com/books/v1/volumes`,
+    method: 'GET',
+    dataType: 'json',
+    headers: {
+      'Accept-Encoding': 'application/json',
+    },
+    params: {
+      key: process.env.API_KEY,
+      q: req.body.title, //this will be passed in by the form
+      maxsize: 10 // you can choose the number of events you would like to return
+    },
+  })
+    .then(results => {
+      console.log(results); // the results will be displayed on the terminal if the docker containers are running 
+      res.render('pages/explore', {books: results.data.items});
+    })
+    .catch(error => {
+      // Handle errors
+      console.log(error);
+      res.render('pages/explore', {books: []});
+    });
+
+});
+
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
