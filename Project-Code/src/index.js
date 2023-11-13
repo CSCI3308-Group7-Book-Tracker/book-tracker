@@ -130,7 +130,7 @@ app.post('/login', async (req,res) => {
           }
         );
       } else {
-        res.redirect("/login");
+        res.redirect("/explore");
       }
     });
 })
@@ -154,6 +154,33 @@ app.get("/logout", (req, res) => {
   res.render("pages/login", {
     message: "Logged Out Successfully."
   });
+});
+
+//explore page external api call
+
+app.get('/explore', auth, async (req, res)=>{
+  axios({
+    url: `https://www.googleapis.com/books/v1/volumes`,
+    method: 'GET',
+    dataType: 'json',
+    headers: {
+      'Accept-Encoding': 'application/json',
+    },
+    params: {
+      key: process.env.API_KEY,
+      q: req.params.keyword, //this will be passed in by the form
+      maxsize: 10 // you can choose the number of events you would like to return
+    },
+  })
+    .then(results => {
+      console.log(results.data); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+      res.render('pages/explore', {books: items});
+    })
+    .catch(error => {
+      // Handle errors
+      res.render('pages/explore', {books: []});
+    });
+
 });
 
 
