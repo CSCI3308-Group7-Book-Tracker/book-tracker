@@ -191,6 +191,35 @@ app.post('/explore', auth, async (req, res)=>{
 
 });
 
+
+app.get('/Top3', function (req, res)
+{
+    const query =
+        `select books.book_id, books.name from books 
+        INNER JOIN books_to_reviews
+        ON books.book_id = books_to_reviews.book_id 
+        INNER JOIN reviews 
+        ON books_to_reviews.review_id = reviews.review_id 
+        ORDER BY ratings DESC LIMIT 3`
+    db.any(query)
+    .then(function (data) {
+        res.status(201).json({
+          status: 'success',
+          data: data,
+          message: 'Your reviews are listed below: ',
+        });
+      })
+      .catch(err => {
+        console.log('Uh Oh spaghettio');
+        console.log(err);
+        res.status('400').json({
+          current_user: '',
+          city_users: '',
+          error: err,
+        });
+      });
+})
+
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
