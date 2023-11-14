@@ -20,7 +20,7 @@
                     var rows = '';
                     books.forEach(function(item)
                             {
-                                rows += "<tr><td>" + item.volumeInfo.title + "</td><td>" + item.volumeInfo.authors[0] + "</td><td>" + item.volumeInfo.publishedDate + "</td><td><img src=\"" + item.volumeInfo.imageLinks.smallThumbnail + "\"></td></tr>";
+                                rows += "<tr><td>" + item.volumeInfo.title + "</td><td>" + item.volumeInfo.authors[0] + "</td><td>" + item.volumeInfo.industryIdentifiers[0].identifier + "</td><td>" + item.volumeInfo.publishedDate + "</td><td><img src=\"" + item.volumeInfo.imageLinks.smallThumbnail + "\"></td></tr>";
                             }
                     );
                 }
@@ -31,6 +31,7 @@
             <tr>
                 <th scope="col">Title</th>
                 <th scope="col">Author</th>
+                <th scope="col">ISBN</th>
                 <th scope="col">Date Published</th>
                 <th scope="col">Cover</th>
             </tr></thead>
@@ -40,7 +41,7 @@
           </tbody>  
                       
         </table>
-    
+    <!-- MODAL ACCESS: items[<index>].volumeInfo.description -->
     </div>
   </div>
 </main>
