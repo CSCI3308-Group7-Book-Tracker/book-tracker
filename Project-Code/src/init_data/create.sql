@@ -50,7 +50,8 @@ CREATE TABLE users_to_books (
   user_id INT NOT NULL,
   book_id INT NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users (user_id),
-  FOREIGN KEY (book_id) REFERENCES books (book_id)
+  FOREIGN KEY (book_id) REFERENCES books (book_id),
+  finished BOOLEAN NOT NULL
 );
 
 DROP TABLE IF EXISTS images_to_books CASCADE;
