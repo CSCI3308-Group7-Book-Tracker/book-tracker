@@ -104,18 +104,15 @@ app.post('/login', async (req,res) => {
     
             req.session.user = user;
             req.session.save();
-            res.redirect('/login');
+            res.redirect(302, '/login');
           } else {
-            res
-              .status(401)
-              .render('pages/login', {
+            res.render('pages/login', {
               error: true,
               message: 'Wrong Password, Try Again Please.'}
             );
           }
         })
         .catch((bcryptError) => {
-          // console.log(bcryptError);
           res.redirect('/login');
         });
     })
