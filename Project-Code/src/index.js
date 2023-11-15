@@ -52,7 +52,11 @@ const user = {
 
 // TODO - Include your API routes here
 app.get('/', (req, res) => {
-    res.redirect('/login');
+    res.redirect('/welcome');
+})
+
+app.get('/welcome', (req, res) => {
+  res.render("pages/welcome");
 })
 
 app.get('/login', (req, res) => {
