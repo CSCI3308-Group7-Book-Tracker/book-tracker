@@ -138,8 +138,8 @@ app.post('/login', async (req,res) => {
 // Authentication Middleware.
 const auth = (req, res, next) => {
   if (!req.session.user) {
-    // Default to login page.
-    return res.redirect('/login');
+    // Default to welcome page.
+    return res.redirect('/welcome');
   }
   next();
 };
@@ -148,6 +148,10 @@ const auth = (req, res, next) => {
 app.use(auth);
 
 // we will add more main page components (pages that require a logged in user) after this auth middleware component.
+
+app.get('/profile', (req,res) => {
+  res.render('pages/profile',{user})
+});
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
