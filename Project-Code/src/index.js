@@ -157,6 +157,7 @@ app.get("/logout", (req, res) => {
 });
 
 
+
 //render explore page initially
 app.get("/explore", (req, res) => {
   res.render("pages/explore",{books:[]});
@@ -190,6 +191,22 @@ app.post('/explore', auth, async (req, res)=>{
     });
 
 });
+
+// collections page routes
+app.get("/collections", (req, res) => {
+ // let query =  `SELECT name, books.book_id, genre, avg_rating FROM books JOIN images_to_books ON images_id = books_id ` //JOIN images ON book_id = images.id WHERE books.book_id IN (SELECT books_read FROM users WHERE user.id = 1`; // update with proper session variable
+  let query2 = `SELECT books_read FROM users WHERE username = $1`
+  db.any(query2, ["admin"])
+    // if query execution succeeds
+    // query results can be obtained
+    // as shown below
+    .then(data => {
+      console.log(data)
+      res.render('pages/collections', {books: data});
+    })
+
+});
+
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
