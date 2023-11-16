@@ -1,5 +1,6 @@
 <%- include ('../partials/header') %>
 
+
 <main>
   <div class="container d-flex flex-column justify-content-center align-items-center my-5">
     <div class="col"><%- include ('../partials/message') %></div>
@@ -14,7 +15,7 @@
           <label for="password" class="form-label">Password:</label>
           <input type="text" id="password" name="password" class="form-control" />
         </div>
-        <button type="submit" class="btn btn-primary" href="/Project-Code/src/views/pages/welcome.ejs"> Back </a></button>
+        <button type="button" class="btn btn-primary" class="nav-link" onclick="window.location.href='/explore';">Back</button>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
       <p> Already Registered? Log In! <a href="/login">Login</a></p>
