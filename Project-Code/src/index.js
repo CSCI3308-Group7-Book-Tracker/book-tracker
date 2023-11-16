@@ -103,13 +103,12 @@ app.post('/login', async (req,res) => {
       bcrypt.compare(req.body.password, data.password)
         .then((match) => {
           if (match) {
-            req.session.user = {
-              id: data.user_id,
-              username: data.username,
-              password: data.password, 
-              booksRead: data.books_read,
-              reviewsLeft: data.reviews_left
-          };
+            user.id = data.user_id;
+            user.username = data.username;
+            user.password = data.password;  
+            user.booksRead = data.books_read;
+            user.reviewsLeft = data.reviews_left;
+
             req.session.save();
             res.redirect('/login');
           } else {
