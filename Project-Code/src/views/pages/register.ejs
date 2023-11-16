@@ -15,10 +15,19 @@
           <label for="password" class="form-label">Password:</label>
           <input type="text" id="password" name="password" class="form-control" />
         </div>
-        <button type="button" class="btn btn-primary" class="nav-link" onclick="window.location.href='/explore';">Back</button>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <div class="container">
+          <div class="col">
+              <button type="button" style="width: 75px; height: 40px; " class="btn btn-secondary btn-block me-4" class="nav-link" onclick="window.location.href='/welcome';">Back</button>
+      
+              <button type="submit" style="width: 75px; height: 40px;" class="btn btn-primary btn-block">Submit</button>
+      
+          </div>
+        </div> 
       </form>
-      <p> Already Registered? Log In! <a href="/login">Login</a></p>
+
+      <p class="text-center">
+        <a href="/login" style="color: grey; opacity: 0.7; text-decoration: none;">Already Registered? Log In!</a>
+    </p>
     </div>
   </main>
 

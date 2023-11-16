@@ -163,3 +163,11 @@
       opacity: 1;
     }
   }
+
+
+
+  .btn-block {
+    width: 100%; /* Makes the button expand to the full width of the column */
+    height: 50px; /* Example fixed height */
+  }
+  
