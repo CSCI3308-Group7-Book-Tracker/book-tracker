@@ -61,3 +61,6 @@ CREATE TABLE images_to_books (
   FOREIGN KEY (image_id) REFERENCES images (image_id),
   FOREIGN KEY (book_id) REFERENCES books (book_id)
 );
+
+insert into users(username, password, books_read, reviews_left)  
+values('admin', '$2a$10$t6/p0x0m6QpRUbkTgXjwzOoptBh1aQgqddVal41aKBi7t.2.YPeDK', 0, 0);
