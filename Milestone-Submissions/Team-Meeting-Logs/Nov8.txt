@@ -1,0 +1,35 @@
+Meeting with TA: 
+    Stories and the initial setup for project is done
+    stories are now in the backlog
+    use cases have acceptance critrea
+
+    Individual contributions:
+    Rayaan:
+        Worked on Login 
+        Worked on register
+        Got the directory up and running 
+        working on the some of the tests Lab 11
+        working on the welcome page
+
+    Lucas:
+        got the database set up
+        Got the docker yaml running
+        Lab 11 Part B
+        working on user profile
+
+    Liz:
+        worked on the partials like hte menu and navbar
+        Lab 11 Part B
+        got the explore page HTML
+        working on the api
+
+    Ibrahim
+        worked on the logout page
+        working on home page
+
+    Beth
+        worked on the HTML for stats
+        made the reviews queries 
+        Lab 11 Part B
+        edited some of the calls for the tests on Lab 11 
+        working on the stats query 
