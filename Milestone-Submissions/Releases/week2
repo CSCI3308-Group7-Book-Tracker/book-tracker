@@ -1,0 +1,5 @@
+Finished Login and Logout pages
+Added Explore page with functional search bar
+Added Welcome Page
+Added Test cases for database. Tested Log In and Log out with positive and negative test cases using mocha and chai
+Updated databse to be able to store information about particular user books
