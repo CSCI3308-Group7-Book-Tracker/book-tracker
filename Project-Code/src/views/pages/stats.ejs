@@ -11,9 +11,9 @@
                             <div class="card-body">
                             <!-- REPLACE THIS WITH book title -->    <h5 class="card-title"><%-result.name %></h5>
                             <!-- REPLACE THIS WITH book release date -->   <p class="card-date"><%-result.dates.start.localDate %></p>
-                            <!-- REPLACE THIS WITH book page #-->   <p class="card-time"><%-result.dates.start.localTime %></p>
-                            <!-- REPLACE THIS WITH book author -->   <p class="card-time"><%-result.dates.start.localTime %></p>
-                            <!-- REPLACE THIS WITH book reviews -->    <p class="card-time"><%-result.dates.start.localTime %></p>
+                            <!-- REPLACE THIS WITH book page #-->   <p class="card-page"><%-result.dates.start.localTime %></p>
+                            <!-- REPLACE THIS WITH book author -->   <p class="card-author"><%-result.dates.start.localTime %></p>
+                            <!-- REPLACE THIS WITH book reviews -->    <p class="card-reviews"><%-result.dates.start.localTime %></p>
                             <!-- REPLACE THIS WITH checkout button --> <a href="<%-result.url %>" class="btn btn-primary">checkout</a>
                             </div>
                           </div>
@@ -21,8 +21,34 @@
       </div>
   </div>
 </td>
-
-
-        
-  </div>
+</div>
 </main>
+<!--WILL PUT IN INDEX.JS-->
+
+app.get('/Top3', function (req, res)
+{
+    const query =
+        `select books.book_id, books.name from books 
+        INNER JOIN books_to_reviews
+        ON books.book_id = books_to_reviews.book_id 
+        INNER JOIN reviews 
+        ON books_to_reviews.review_id = reviews.review_id 
+        ORDER BY ratings DESC LIMIT 3`
+    db.any(query)
+    .then(function (data) {
+        res.status(201).json({
+          status: 'success',
+          data: data,
+          message: 'Your reviews are listed below: ',
+        });
+      })
+      .catch(err => {
+        console.log('Uh Oh spaghettio');
+        console.log(err);
+        res.status('400').json({
+          current_user: '',
+          city_users: '',
+          error: err,
+        });
+      });
+})

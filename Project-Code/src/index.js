@@ -52,7 +52,11 @@ const user = {
 
 // TODO - Include your API routes here
 app.get('/', (req, res) => {
-    res.redirect('/login');
+    res.redirect('/welcome');
+})
+
+app.get('/welcome', (req, res) => {
+  res.render("pages/welcome");
 })
 
 app.get('/login', (req, res) => {
@@ -99,10 +103,13 @@ app.post('/login', async (req,res) => {
       bcrypt.compare(req.body.password, data.password)
         .then((match) => {
           if (match) {
-            user.username = data.username;
-            user.password = data.password;
-    
-            req.session.user = user;
+            req.session.user = {
+              id: data.user_id,
+              username: data.username,
+              password: data.password, 
+              booksRead: data.books_read,
+              reviewsLeft: data.reviews_left
+          };
             req.session.save();
             res.redirect('/login');
           } else {
@@ -175,7 +182,7 @@ app.post('/explore', auth, async (req, res)=>{
     params: {
       key: process.env.API_KEY,
       q: req.body.title, //this will be passed in by the form
-      maxsize: 5 // you can choose the number of events you would like to return
+      maxsize: 10 // you can choose the number of events you would like to return
     },
   })
     .then(results => {
@@ -189,6 +196,34 @@ app.post('/explore', auth, async (req, res)=>{
     });
 
 });
+
+app.get('/Top3', function (req, res)
+{
+    const query =
+        `select books.book_id, books.name from books 
+        INNER JOIN books_to_reviews
+        ON books.book_id = books_to_reviews.book_id 
+        INNER JOIN reviews 
+        ON books_to_reviews.review_id = reviews.review_id 
+        ORDER BY ratings DESC LIMIT 3`
+    db.any(query)
+    .then(function (data) {
+        res.status(201).json({
+          status: 'success',
+          data: data,
+          message: 'Your reviews are listed below: ',
+        });
+      })
+      .catch(err => {
+        console.log('Uh Oh spaghettio');
+        console.log(err);
+        res.status('400').json({
+          current_user: '',
+          city_users: '',
+          error: err,
+        });
+      });
+})
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
