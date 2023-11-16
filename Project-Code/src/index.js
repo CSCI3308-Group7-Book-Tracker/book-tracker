@@ -232,6 +232,18 @@ app.get("/collections", (req, res) => {
      // if query execution succeeds
      // query results can be obtained
      // as shown below
+     //QUERY 
+      // Select books.name, books.book_id, books.genre,  books.avg_rating, images.image_url
+      // from book
+      // Join users_to_books
+      // On books.book_id = users_to_books.books_id
+      // Join users
+      // On users_to_books.user_id = users.user_id
+      // Join images_to_books
+      // On images_to_books.book_id = books.book_id
+      // join images
+      // On images_to_books.image_id = images.image_id
+
      .then(data => {
        console.log(data)
        res.render('pages/collections', {books: data});
