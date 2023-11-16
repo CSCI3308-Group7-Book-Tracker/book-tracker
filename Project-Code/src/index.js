@@ -145,8 +145,8 @@ app.post('/login', async (req,res) => {
 // Authentication Middleware.
 const auth = (req, res, next) => {
   if (!req.session.user) {
-    // Default to welcome page.
-    return res.redirect('/welcome');
+    // Default to login page.
+    return res.redirect('/login');
   }
   next();
 };
