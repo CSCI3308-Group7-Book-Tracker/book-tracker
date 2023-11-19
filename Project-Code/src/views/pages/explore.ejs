@@ -3,15 +3,15 @@
 <main>
   <div class="container">
     <h1>Explore</h1>
-    <div id="search_bar">
-        <form action="/explore" method="POST">
-            <div class="mb-3">
-              <label for="title" class="form-label">Title:</label>
-              <input type="text" id="title" name="title" class="form-control" />
-            </div>      
-            <button type="submit" class="btn btn-primary">Search</button>
-          </form>
-    </div>
+    <div id="search_bar" class="mt-3">
+      <form action="/explore" method="POST">
+        <div class="input-group mb-3">
+          <label for="title" class="visually-hidden">Title:</label>
+          <input type="text" id="title" name="title" class="form-control" placeholder="Search Books by Title" aria-label="Search Books by Title" aria-describedby="search-btn" />
+          <button type="submit" class="btn btn-primary" id="search-btn">Search</button>
+        </div>
+      </form>
+    </div>    
     <div id="book_table">
       <%
                 if(books != undefined)
