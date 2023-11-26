@@ -15,6 +15,8 @@ CREATE TABLE IF NOT EXISTS books (
   author VARCHAR(100),
   isbn VARCHAR(100),
   description VARCHAR(10000),
+  num_pages INT,
+  year_published INT,
   avg_rating DECIMAL NOT NULL
 );
 
