@@ -12,6 +12,8 @@ CREATE TABLE IF NOT EXISTS books (
   book_id SERIAL PRIMARY KEY NOT NULL,
   name VARCHAR(100) NOT NULL,
   genre VARCHAR(100),
+  author VARCHAR(100),
+  isbn VARCHAR(100),
   avg_rating DECIMAL NOT NULL
 );
 
