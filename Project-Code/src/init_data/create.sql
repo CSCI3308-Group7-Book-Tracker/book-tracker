@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS books (
   description VARCHAR(10000),
   num_pages INT,
   year_published INT,
-  avg_rating DECIMAL NOT NULL
+  avg_rating DECIMAL 
 );
 
 DROP TABLE IF EXISTS reviews CASCADE;

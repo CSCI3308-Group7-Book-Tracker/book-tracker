@@ -61,7 +61,15 @@
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary">Save changes</button>
+                      <form action = "/addBook" method = "POST"> 
+                        <input type="hidden" name="ISBN" value="<%= item?.volumeInfo?.industryIdentifiers?.[0]?.identifier || 'N/A' %>"> 
+                        <input type="hidden" name="page_count" value="<%= item?.volumeInfo?.pageCount || 'N/A' %>">
+                        <input type="hidden" name="Author" value=" <%= item?.volumeInfo?.authors?.[0] || 'N/A' %>">
+                        <input type="hidden" name="date" value="<%= item?.volumeInfo?.publishedDate || 'N/A' %>">
+                        <input type="hidden" name="description" value=" <%= item?.volumeInfo?.description || 'N/A' %>">
+                        <input type="hidden" name="title" value="<%= item?.volumeInfo?.title || 'N/A' %>">
+
+                        <button type="submit" class="btn btn-primary">Add Book</button> </form> 
                     </div>
                   </div>
                 </div>

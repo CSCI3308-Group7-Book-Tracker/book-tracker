@@ -201,6 +201,26 @@ app.post('/explore', auth, async (req, res)=>{
 
 });
 
+app.post("/addBook", auth, async (req, res)=>{
+  let query = "INSERT INTO books (name, author, isbn, description, num_pages, year_published) values ($1, $2, $3, $4, $5, $6) RETURNING *;";
+  //console.log("We are here");
+  console.log(req.body.title);
+  console.log(req.body);
+  db.any(query, [req.body.title, req.body.author, req.body.isbn, req.body.description, req.body.num_pages, req.body.year_published])
+  .then(data => {
+    console.log(data);
+  })
+
+// //then:
+// let query1 = "INSERT INTO users_to_books (user_id, book_id) values ($1, $2);";
+// //will get user id from ses var and book id from returned value
+
+// let query2 = "INSERT INTO images (image_url) values ($1) RETURNING *;";
+
+// //then:
+// let query3 = "INSERT INTO images_to_books (book_id, image_id) values ($1, $2);";
+})
+
 app.get('/Top3', function (req, res)
 {
     const query =
