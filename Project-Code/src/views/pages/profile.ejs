@@ -2,31 +2,186 @@
 <%- include ('../partials/menu') %>
 
 <main>
+    <style>
+        main {
+          margin: 0;
+          padding: 0;
+          height: 100vh;
+          display: flex;
+          background-color: blanchedalmond;
+          /* Change this to file in img directory when we figure out how to service static files */
+          background-image: url(https://www.getty.edu/art/exhibitions/book_of_dead/images/gm_020228D3V1_cropped.jpg);
+        }
+    
+        .left-half {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+    
+        .left-card {
+          background-color: rgba(255, 255, 255, 0.7); /* Initial transparency */
+          padding: 50px;
+          height: 100%; /* Take up all vertical space */
+          width: 60%; /* Keep the horizontal space the same */
+          box-sizing: border-box; /* Include padding in the width */
+        }
+    
+        @keyframes fadeInUp {
+          to {
+            transform: translateY(0);
+            background-color: rgba(255, 255, 255, 1); /* Opaque at the end of animation */
+          }
+        }
+    
+        .right-half {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          padding-left: 20px;
+          padding-right: 20px;
+          align-items: center;
+          justify-content: center;
+        }
+    
+        .right-card {
+          background-color: rgba(255, 255, 255, 0); /* Initial complete transparency */
+          padding: 70px; /* Adjusted padding for better appearance */
+          border-radius: 10px;
+          transition: background-color 0.5s ease, transform 0.5s ease, opacity 0.5s ease;
+          animation: fadeInRight 650ms ease-out 3s forwards; /* Animation with 3s delay */
+          opacity: 0; /* Set initial opacity to 0 */
+        }
+    
+        /* Add a new keyframes animation for fadeInRight */
+        @keyframes fadeInRight {
+          to {
+            background-color: rgba(255, 255, 255, 0.7);
+            opacity: 1;
+          }
+        }
+    
+        /* Hover effects for the right card */
+        .right-card.animation-complete {
+          cursor: pointer; /* Change cursor on hover */
+        }
+    
+        .right-card.animation-complete:hover {
+          transform: scale(1.1); /* Increase size on hover */
+        }
+    
+        .buttons-container {
+          display: flex;
+          flex-direction: column;
+          gap: 20px; /* Space between buttons */
+          transition: transform 0.5s ease; /* Transition for hover effect */
+        }
+    
+        .right-card.animation-complete:hover .buttons-container {
+          transform: scale(1.1); /* Increase size on hover */
+        }
+    
+        .right-card.animation-complete:hover {
+          background-color: rgba(255, 255, 255, 1); /* Opaque on hover */
+        }
+    
+        .right-card.animation-complete:hover .buttons-container a {
+          opacity: 1; /* Full opacity on hover for buttons */
+        }
+    
+        .right-card.animation-complete .buttons-container a {
+          opacity: 0; /* Initial transparency */
+          transition: opacity 0.5s ease;
+        }
+    
+        .right-card.animation-complete:hover .buttons-container a:hover {
+          opacity: 1; /* Full opacity on hover for buttons */
+        }
+    
+        .btn {
+          display: inline-block;
+          padding: 10px 20px;
+          border-radius: 5px;
+          transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+    
+        .offset-header {
+          font-style: normal;
+          font-weight: 400;
+          font-size: 42px;
+          line-height: 55px;
+          letter-spacing: -0.02em;
+          max-width: 500px;
+          margin: 10px 0;
+        }
+    
+        span.offset-header {
+          display: block;
+          overflow: hidden;
+        }
+    
+        span.offset-header > span {
+          animation-name: slideUp;
+          animation-duration: 6s;
+          animation-timing-function: ease-in;
+          display: block;
+        }
+    
+        span.offset-header-title {
+          display: block;
+          overflow: hidden;
+        }
+    
+        span.offset-header-title > span {
+          animation-name: slideUp;
+          animation-duration: 2.5s;
+          animation-timing-function: ease-in;
+          display: block;
+        }
+    
+        .offset-header-odd > span {
+          text-align: left;
+          animation-delay: 0s;
+          animation-fill-mode: forwards;
+        }
+    
+        .offset-header-even > span {
+          text-align: right;
+          animation-delay: 150ms;
+          animation-fill-mode: both;
+        }
+    
+        @keyframes slideUp {
+          0%, 50% {
+            transform: translateY(100%);
+            opacity: 0;
+          }
+    
+          60%, 100% {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+      </style>
     <div class="container">
         <h1><%=user.username%>'s Profile</h1>
-                <table class="table table-striped" style="border: 1px; border-color: grey">
+                <table class="table table-striped table-bordered">
                     <thead>
-                      <tr class="table-dark">
+                      <tr class="table-dark" style="opacity:85%">
                         <th scope="col">Books Read</th>
                         <th scope="col">Reviews Left</th>
                         <th scope="col">Favorite Genre</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td><%=user.books_read || 0%></td>
-                        <td><%=user.reviews_left || 0%></td>
-                        <td><%=user.favorite_genre || "Undecided"%></td>
-                      </tr>
-                      <tr>
-                        <td><%=user.books_read || 0%></td>
-                        <td><%=user.reviews_left || 0%></td>
-                        <td><%=user.favorite_genre || "Undecided"%></td>
-                      </tr>
-                      <tr>
-                        <td><%=user.books_read || 0%></td>
-                        <td><%=user.reviews_left || 0%></td>
-                        <td><%=user.favorite_genre || "Undecided"%></td>
+                      <tr class="table-warning" style="opacity:70%">
+                        <td><strong><%=user.books_read || 0%></strong></td>
+                        <td><strong><%=user.reviews_left || 0%></strong></td>
+                        <td><strong><%=user.favorite_genre || "Undecided"%></strong></td>
                       </tr>
                     </tbody>
                   </table>
