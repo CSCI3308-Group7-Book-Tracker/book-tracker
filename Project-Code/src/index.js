@@ -230,24 +230,15 @@ app.get('/Top3', function (req, res)
 })
 
 app.get("/collections", (req, res) => {
-  // let query =  `SELECT name, books.book_id, genre, avg_rating FROM books JOIN images_to_books ON images_id = books_id ` //JOIN images ON book_id = images.id WHERE books.book_id IN (SELECT books_read FROM users WHERE user.id = 1`; // update with proper session variable
-   let query2 = `SELECT books_read FROM users WHERE username = $1`
+  // let query2 = "SELECT books.name, books.author, books.avg_rating FROM books;";
+  // let query2 = "SELECT books.name, books.author, books.avg_rating FROM books JOIN users_to_books ON books.book_id = users_to_books.book_id JOIN users ON users.user_id = users_to_books.user_id WHERE username = \'admin\'";
+  let query2 = "Select books.name, books.book_id, books.author, books.avg_rating, images.image_url from books Join users_to_books On books.book_id = users_to_books.book_id Join users On users_to_books.user_id = users.user_id Join images_to_books On images_to_books.book_id = books.book_id join images On images_to_books.image_id = images.image_id where users.username = $1;";
    db.any(query2, [user.username])
      // if query execution succeeds
      // query results can be obtained
      // as shown below
      //QUERY 
-      // Select books.name, books.book_id, books.genre,  books.avg_rating, images.image_url
-      // from book
-      // Join users_to_books
-      // On books.book_id = users_to_books.books_id
-      // Join users
-      // On users_to_books.user_id = users.user_id
-      // Join images_to_books
-      // On images_to_books.book_id = books.book_id
-      // join images
-      // On images_to_books.image_id = images.image_id
-     .then(data => {
+           .then(data => {
        console.log(data)
        res.render('pages/collections', {books: data});
      })
