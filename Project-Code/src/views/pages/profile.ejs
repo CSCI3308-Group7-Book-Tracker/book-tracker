@@ -1,0 +1,36 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+<main>
+    <div class="container">
+        <h1><%=user.username%>'s Profile</h1>
+                <table class="table table-striped" style="border: 1px; border-color: grey">
+                    <thead>
+                      <tr class="table-dark">
+                        <th scope="col">Books Read</th>
+                        <th scope="col">Reviews Left</th>
+                        <th scope="col">Favorite Genre</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><%=user.books_read || 0%></td>
+                        <td><%=user.reviews_left || 0%></td>
+                        <td><%=user.favorite_genre || "Undecided"%></td>
+                      </tr>
+                      <tr>
+                        <td><%=user.books_read || 0%></td>
+                        <td><%=user.reviews_left || 0%></td>
+                        <td><%=user.favorite_genre || "Undecided"%></td>
+                      </tr>
+                      <tr>
+                        <td><%=user.books_read || 0%></td>
+                        <td><%=user.reviews_left || 0%></td>
+                        <td><%=user.favorite_genre || "Undecided"%></td>
+                      </tr>
+                    </tbody>
+                  </table>
+    </div>
+</main>
+
+<%- include ('../partials/footer') %>

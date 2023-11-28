@@ -156,6 +156,10 @@ app.use(auth);
 
 // we will add more main page components (pages that require a logged in user) after this auth middleware component.
 
+app.get('/profile', (req,res) => {
+  res.render('pages/profile',{user})
+});
+
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.render("pages/login", {
@@ -243,7 +247,6 @@ app.get("/collections", (req, res) => {
       // On images_to_books.book_id = books.book_id
       // join images
       // On images_to_books.image_id = images.image_id
-
      .then(data => {
        console.log(data)
        res.render('pages/collections', {books: data});

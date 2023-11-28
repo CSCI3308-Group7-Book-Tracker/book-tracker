@@ -1,60 +1,89 @@
-<%- include ('../partials/header') %> <%- include ('../partials/menu') %>
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
 
 <main>
   <div class="container">
     <h1>Explore</h1>
     <div id="search_bar">
-        <form action="/explore" method="POST">
-            <div class="mb-3">
-              <label for="title" class="form-label">Title:</label>
-              <input type="text" id="title" name="title" class="form-control" />
-            </div>      
-            <button type="submit" class="btn btn-primary">Search</button>
-          </form>
+      <form action="/explore" method="POST">
+        <div class="mb-3">
+          <label for="title" class="form-label">Title:</label>
+          <input type="text" id="title" name="title" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
     </div>
     <div id="book_table">
-      <%
-                if(books != undefined)
-                {
-                    var rows = '';
-                    console.log("keyfindhere");
-                    console.log(books);
-
-                    books.forEach(function(item)
-                            {
-                                if(item.volumeInfo.title != undefined && item.volumeInfo.authors[0] != undefined && item.volumeInfo.industryIdentifiers != undefined && item.volumeInfo.publishedDate != undefined)
-                                {
-                                  rows += "<tr><td>" + item.volumeInfo.title + "</td><td>" + item.volumeInfo.authors[0] + "</td><td>" + item.volumeInfo.industryIdentifiers[0]?.identifier + "</td><td>" + item.volumeInfo.publishedDate + "</td><td><img src=\""; 
-                                    if(item.volumeInfo.imageLinks != undefined)
-                                    {
-                                      rows += item.volumeInfo.imageLinks.thumbnail + "\"></td></tr>";
-                                    } 
-                                    else
-                                    {
-                                      rows += "\"></td></tr>";
-                                    }
-                                }
-                            }
-                    );
-                }
-            %>
-
+      <% if (books) { %>
         <table class="table table-striped">
           <thead>
             <tr>
-                <th scope="col">Title</th>
-                <th scope="col">Author</th>
-                <th scope="col">ISBN</th>
-                <th scope="col">Date Published</th>
-                <th scope="col">Cover</th>
-            </tr></thead>
-            <hr>
+              <th scope="col">Title</th>
+              <th scope="col">Author</th>
+              <th scope="col">ISBN</th>
+              <th scope="col">Date Published</th>
+              <th scope="col">Cover</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
           <tbody>
-          <%- rows %>
-          </tbody>  
-                      
+            <% books.forEach(function (item, index) { %>
+              <!-- Modal, we may want to make this a partial, but it might not be possible right now... -->
+              <div class="modal fade" id="bookDetails<%= index %>" tabindex="-1" aria-labelledby="bookDetailsLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="modalTitle"><%= item?.volumeInfo?.title || 'N/A' %></h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="modalBody">
+                      <div class="row">
+                        <div class="col-sm">
+                          <img src="<%= item.volumeInfo?.imageLinks?.smallThumbnail || 'path/to/placeholder-image.jpg' %>">
+                        </div>
+                        <div class="col-sm">
+                          <p><strong>ISBN: </strong> <%= item?.volumeInfo?.industryIdentifiers?.[0]?.identifier || 'N/A' %></p>
+                          <p><strong>Page Count: </strong> <%= item?.volumeInfo?.pageCount || 'N/A' %></p>
+                          <p><strong>Author: </strong> <%= item?.volumeInfo?.authors?.[0] || 'N/A' %></p>
+                          <p><strong>Date Published: </strong> <%= item?.volumeInfo?.publishedDate || 'N/A' %></p>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <p></p><hr> <!-- Sloppy spacing, fix if necessary -->
+                        <p><strong>Description: </strong> <%= item?.volumeInfo?.description || 'N/A' %></p>
+                      </div>
+                      <div class="row">
+                        <!-- 
+                          TODO: This row section should hold the remaining information about ratings and reviews, which
+                          will come from our own DB when ready!
+                        -->
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <tr>
+                <td><%= item?.volumeInfo?.title || 'N/A' %></td>
+                <td><%= item?.volumeInfo?.authors?.[0] || 'N/A' %></td>
+                <td><%= item?.volumeInfo?.industryIdentifiers?.[0]?.identifier || 'N/A' %></td>
+                <td><%= item?.volumeInfo?.publishedDate || 'N/A' %></td>
+                <td><img src="<%= item?.volumeInfo?.imageLinks?.smallThumbnail || 'path/to/placeholder-image.jpg' %>"></td>
+                <td>
+                  <button type="button" class="btn btn-primary" 
+                    data-bs-toggle="modal" data-bs-target="#bookDetails<%= index %>"
+                    data-index="<%= index %>">
+                    See Details
+                  </button>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
         </table>
-    <!-- MODAL ACCESS: items[<index>].volumeInfo.description -->
+      <% } %>
     </div>
   </div>
 </main>
