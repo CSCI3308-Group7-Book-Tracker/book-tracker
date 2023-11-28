@@ -1,6 +1,20 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/menu') %>
 
+<style>
+  .center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 55vh;
+  }
+
+  .centered-text {
+    text-align: center;
+    font-size: 1.5em;
+  }
+</style>
 <main>
   <div class="container">
     <h1>Explore</h1>
@@ -14,7 +28,11 @@
       </form>
     </div>    
     <div id="book_table">
-      <% if (books) { %>
+      <% if (books && books.length === 0) { %> 
+        <div class="container center-content text-muted">
+          <p class="centered-text">To load books, search books by title in the Searchbar</p>
+        </div>
+      <% } else if (books) { %>
         <table class="table table-striped">
           <thead>
             <tr>
@@ -83,6 +101,10 @@
             <% }); %>
           </tbody>
         </table>
+      <% } else { %>
+        <div class="container center-content text-muted">
+          <p class="centered-text">No Results. Make another Search.</p>  
+        </div>   
       <% } %>
     </div>
   </div>
