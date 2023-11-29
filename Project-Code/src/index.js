@@ -44,6 +44,7 @@ app.use(
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 const user = {
+  id : undefined,
   username: undefined,
   password: undefined,
   books_read: undefined,
@@ -106,8 +107,8 @@ app.post('/login', async (req,res) => {
             user.id = data.user_id;
             user.username = data.username;
             user.password = data.password;  
-            user.booksRead = data.books_read;
-            user.reviewsLeft = data.reviews_left;
+            user.books_read = data.books_read;
+            user.reviews_left = data.reviews_left;
 
             req.session.save();
             res.redirect('/login');
