@@ -10,13 +10,14 @@ CREATE TABLE IF NOT EXISTS users (
 DROP TABLE IF EXISTS books CASCADE;
 CREATE TABLE IF NOT EXISTS books (
   book_id SERIAL PRIMARY KEY NOT NULL,
-  name VARCHAR(100) NOT NULL,
+  name VARCHAR(100),
   genre VARCHAR(100),
   author VARCHAR(100),
   isbn VARCHAR(100),
   description VARCHAR(10000),
   num_pages INT,
-  year_published INT,
+  year_published VARCHAR(50),
+  img_url VARCHAR(500),
   avg_rating DECIMAL 
 );
 

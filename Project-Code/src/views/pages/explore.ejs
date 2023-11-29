@@ -86,7 +86,7 @@
                         <input type="hidden" name="date" value="<%= item?.volumeInfo?.publishedDate || 'N/A' %>">
                         <input type="hidden" name="description" value=" <%= item?.volumeInfo?.description || 'N/A' %>">
                         <input type="hidden" name="title" value="<%= item?.volumeInfo?.title || 'N/A' %>">
-
+                        <input type="hidden" name="img_url" value="<%= item.volumeInfo?.imageLinks?.smallThumbnail || 'path/to/placeholder-image.jpg' %>">
                         <button type="submit" class="btn btn-primary">Add Book</button> </form> 
                     </div>
                   </div>
