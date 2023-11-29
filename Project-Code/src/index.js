@@ -109,7 +109,7 @@ app.post('/login', async (req,res) => {
             user.password = data.password;  
             user.books_read = data.books_read;
             user.reviews_left = data.reviews_left;
-
+            req.session.user = user;
             req.session.save();
             res.redirect('/login');
           } else {
