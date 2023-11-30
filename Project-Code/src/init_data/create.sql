@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS books (
   author VARCHAR(100),
   isbn VARCHAR(100),
   description VARCHAR(10000),
-  num_pages INT,
+  num_pages VARCHAR(20),
   year_published VARCHAR(50),
   img_url VARCHAR(500),
   avg_rating DECIMAL 

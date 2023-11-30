@@ -168,7 +168,7 @@
         }
       </style>
     <div class="container">
-        <h1><%=user.username%>'s Profile</h1>
+        <h1><%=user_input.username%>'s Profile</h1>
                 <table class="table table-striped table-bordered">
                     <thead>
                       <tr class="table-dark" style="opacity:85%">
@@ -179,9 +179,9 @@
                     </thead>
                     <tbody>
                       <tr class="table-warning" style="opacity:70%">
-                        <td><strong><%=user.books_read || 0%></strong></td>
-                        <td><strong><%=user.reviews_left || 0%></strong></td>
-                        <td><strong><%=user.favorite_genre || "Undecided"%></strong></td>
+                        <td><strong><%=user_input.books_read || 0%></strong></td>
+                        <td><strong><%=user_input.reviews_left || 0%></strong></td>
+                        <td><strong><%=user_input.favorite_genre || "Undecided"%></strong></td>
                       </tr>
                     </tbody>
                   </table>

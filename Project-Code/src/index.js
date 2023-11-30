@@ -158,7 +158,12 @@ app.use(auth);
 // we will add more main page components (pages that require a logged in user) after this auth middleware component.
 
 app.get('/profile', (req,res) => {
-  res.render('pages/profile',{user})
+  db.any("SELECT * FROM users WHERE user_id = $1", [req.session.user.id])
+    .then(data => {
+      let user_input = data[0];
+      res.render('pages/profile', {user_input});
+  });
+
 });
 
 app.get("/logout", (req, res) => {
@@ -207,8 +212,10 @@ app.post("/addBook", auth, async (req, res)=>{
   let curr_id = 0;
   db.any(query, [req.body.title, req.body.Author, req.body.ISBN, req.body.description, req.body.page_count, req.body.date, req.body.img_url])
   .then(data => {
-    db.any("INSERT INTO users_to_books (user_id, book_id, finished) values ($1, $2, TRUE)", [req.session.user.id, data[0].book_id]).then(dresult => {
-      //console.log(dresult); 
+    db.any("INSERT INTO users_to_books (user_id, book_id, finished) values ($1, $2, TRUE);", [req.session.user.id, data[0].book_id]).then(data2 => {
+      db.any("UPDATE users SET books_read = books_read + 1 WHERE users.user_id = $1 RETURNING * ;", [req.session.user.id]).then(data3 => {
+       console.log(data3);
+      }) 
     })
   
   })
