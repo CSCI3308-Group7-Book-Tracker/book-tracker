@@ -1,0 +1,35 @@
+<%- include ('../partials/header') %> 
+<%- include ('../partials/menu') %>
+
+<main>
+    <title>Collections</title>
+  <div class="container mx-auto row">
+    <!-- THE REST OF YOUR HTML CODE GOES HERE -->
+
+        <div class="col" style="width:fit-content">
+            <div id="event-cards">
+                <%if (books) {  %>
+                    <% books.forEach(result=>{%>
+                        <div class="card" style="width: 18rem;">
+                            <img src=<%-result.img_url %> class="card-img-top" alt="...">
+                            <div class="column"> 
+                            <div class="card-body">
+                              <h5 class="card-title"><%-result.name %></h5>
+                              <p class="card-text"><%- result.author%></p>
+                            </div>
+                          </div>
+                        </div>
+
+                    <%})%>
+                <%} %>
+
+      </div>
+  </div>
+</td>
+
+
+        
+  </div>
+</main>
+
+<%- include ('../partials/footer') %>

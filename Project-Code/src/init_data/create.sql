@@ -12,7 +12,12 @@ CREATE TABLE IF NOT EXISTS books (
   book_id SERIAL PRIMARY KEY NOT NULL,
   name VARCHAR(100) NOT NULL,
   genre VARCHAR(100),
-  avg_rating DECIMAL NOT NULL
+  author VARCHAR(100),
+  isbn VARCHAR(100),
+  description VARCHAR(10000),
+  num_pages INT,
+  year_published INT,
+  avg_rating DECIMAL 
 );
 
 DROP TABLE IF EXISTS reviews CASCADE;
@@ -26,7 +31,7 @@ CREATE TABLE IF NOT EXISTS reviews (
 DROP TABLE IF EXISTS images CASCADE;
 CREATE TABLE IF NOT EXISTS images (
   image_id SERIAL PRIMARY KEY NOT NULL,
-  image_url VARCHAR(300) NOT NULL
+  image_url VARCHAR(500) NOT NULL
 );
 
 DROP TABLE IF EXISTS books_to_reviews CASCADE;
@@ -56,8 +61,8 @@ CREATE TABLE users_to_books (
 
 DROP TABLE IF EXISTS images_to_books CASCADE;
 CREATE TABLE images_to_books (
-  image_id INT NOT NULL,
   book_id INT NOT NULL,
+  image_id INT NOT NULL,
   FOREIGN KEY (image_id) REFERENCES images (image_id),
   FOREIGN KEY (book_id) REFERENCES books (book_id)
 );

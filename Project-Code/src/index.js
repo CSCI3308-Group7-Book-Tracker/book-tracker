@@ -110,6 +110,7 @@ app.post('/login', async (req,res) => {
             user.books_read = data.books_read;
             user.reviews_left = data.reviews_left;
             req.session.user = user;
+          
             req.session.save();
             res.redirect('/login');
           } else {
@@ -156,6 +157,10 @@ app.use(auth);
 
 // we will add more main page components (pages that require a logged in user) after this auth middleware component.
 
+app.get('/profile', (req,res) => {
+  res.render('pages/profile',{user})
+});
+
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.render("pages/login", {
@@ -172,7 +177,6 @@ app.get("/explore", (req, res) => {
 // explore page external api call
 
 app.post('/explore', auth, async (req, res)=>{
-  console.log(req.body);
   axios({
     url: `https://www.googleapis.com/books/v1/volumes`,
     method: 'GET',
@@ -198,6 +202,25 @@ app.post('/explore', auth, async (req, res)=>{
 
 });
 
+app.post("/addBook", auth, async (req, res)=>{
+  let query = "INSERT INTO books (name, author, isbn, description, num_pages, year_published) values ($1, $2, $3, $4, $5, $6) RETURNING *;";
+  //console.log("We are here");
+  console.log(req.body.title);
+  console.log(req.body);
+  db.any(query, [req.body.title, req.body.author, req.body.isbn, req.body.description, req.body.num_pages, req.body.year_published])
+  .then(data => {
+    console.log(data);
+  })
+
+// //then:
+// let query1 = "INSERT INTO users_to_books (user_id, book_id) values ($1, $2);";
+// //will get user id from ses var and book id from returned value
+
+// let query2 = "INSERT INTO images (image_url) values ($1) RETURNING *;";
+
+// //then:
+// let query3 = "INSERT INTO images_to_books (book_id, image_id) values ($1, $2);";
+})
 
 app.get('/Top3', function (req, res)
 {
@@ -226,6 +249,22 @@ app.get('/Top3', function (req, res)
         });
       });
 })
+
+app.get("/collections", (req, res) => {
+  // let query2 = "SELECT books.name, books.author, books.avg_rating FROM books;";
+  // let query2 = "SELECT books.name, books.author, books.avg_rating FROM books JOIN users_to_books ON books.book_id = users_to_books.book_id JOIN users ON users.user_id = users_to_books.user_id WHERE username = \'admin\'";
+  let query2 = "Select books.name, books.book_id, books.author, books.avg_rating, images.image_url from books Join users_to_books On books.book_id = users_to_books.book_id Join users On users_to_books.user_id = users.user_id Join images_to_books On images_to_books.book_id = books.book_id join images On images_to_books.image_id = images.image_id where users.username = $1;";
+   db.any(query2, [user.username])
+     // if query execution succeeds
+     // query results can be obtained
+     // as shown below
+     //QUERY 
+           .then(data => {
+       console.log(data)
+       res.render('pages/collections', {books: data});
+     })
+ 
+ });
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
