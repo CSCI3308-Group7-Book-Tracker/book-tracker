@@ -112,7 +112,7 @@ app.post('/login', async (req,res) => {
             req.session.user = user;
           
             req.session.save();
-            res.redirect('/login');
+            res.redirect('/explore');
           } else {
             res
               .status(401)
