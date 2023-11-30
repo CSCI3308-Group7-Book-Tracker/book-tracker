@@ -204,12 +204,13 @@ app.post('/explore', auth, async (req, res)=>{
 
 app.post("/addBook", auth, async (req, res)=>{
   let query = "INSERT INTO books (name, author, isbn, description, num_pages, year_published, img_url) values ($1, $2, $3, $4, $5, $6, $7) RETURNING *;";
-  //console.log("We are here");
-  console.log(req.body.title);
-  console.log(req.body);
+  let curr_id = 0;
   db.any(query, [req.body.title, req.body.Author, req.body.ISBN, req.body.description, req.body.page_count, req.body.date, req.body.img_url])
   .then(data => {
-    console.log(data);
+    db.any("INSERT INTO users_to_books (user_id, book_id, finished) values ($1, $2, TRUE)", [req.session.user.id, data[0].book_id]).then(dresult => {
+      //console.log(dresult); 
+    })
+  
   })
 
 // //then:
@@ -253,15 +254,15 @@ app.get('/Top3', function (req, res)
 app.get("/collections", (req, res) => {
   // let query2 = "SELECT books.name, books.author, books.avg_rating FROM books;";
   // let query2 = "SELECT books.name, books.author, books.avg_rating FROM books JOIN users_to_books ON books.book_id = users_to_books.book_id JOIN users ON users.user_id = users_to_books.user_id WHERE username = \'admin\'";
-  let query2 = "Select books.name, books.book_id, books.author, books.avg_rating, images.image_url from books Join users_to_books On books.book_id = users_to_books.book_id Join users On users_to_books.user_id = users.user_id Join images_to_books On images_to_books.book_id = books.book_id join images On images_to_books.image_id = images.image_id;";// where users.username = $1;";
+  let query2 = "Select books.name, books.book_id, books.author, books.avg_rating, books.img_url from books Join users_to_books On books.book_id = users_to_books.book_id Join users On users_to_books.user_id = users.user_id where users.user_id = $1;";
   //let query2 = "Select books.name, books.book_id, books.author, books.avg_rating from books;"; 
-  db.any("SELECT * FROM books")//, [user.username])
+  db.any(query2, [req.session.user.id])
+
      // if query execution succeeds
      // query results can be obtained
      // as shown below
      //QUERY 
            .then(data => {
-       console.log(data)
        res.render('pages/collections', {books: data});
      })
  
