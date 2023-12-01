@@ -230,33 +230,33 @@ app.post("/addBook", auth, async (req, res)=>{
 // let query3 = "INSERT INTO images_to_books (book_id, image_id) values ($1, $2);";
 })
 
-app.get('/Top3', function (req, res)
-{
-    const query =
-        `select books.book_id, books.name from books 
-        INNER JOIN books_to_reviews
-        ON books.book_id = books_to_reviews.book_id 
-        INNER JOIN reviews 
-        ON books_to_reviews.review_id = reviews.review_id 
-        ORDER BY ratings DESC LIMIT 3`
-    db.any(query)
-    .then(function (data) {
-        res.status(201).json({
-          status: 'success',
-          data: data,
-          message: 'Your reviews are listed below: ',
-        });
-      })
-      .catch(err => {
-        console.log('Uh Oh spaghettio');
-        console.log(err);
-        res.status('400').json({
-          current_user: '',
-          city_users: '',
-          error: err,
-        });
-      });
-})
+// app.get('/Top3', function (req, res)
+// {
+//     const query =
+//         `select books.book_id, books.name from books 
+//         INNER JOIN books_to_reviews
+//         ON books.book_id = books_to_reviews.book_id 
+//         INNER JOIN reviews 
+//         ON books_to_reviews.review_id = reviews.review_id 
+//         ORDER BY ratings DESC LIMIT 3`
+//     db.any(query)
+//     .then(function (data) {
+//         res.status(201).json({
+//           status: 'success',
+//           data: data,
+//           message: 'Your reviews are listed below: ',
+//         });
+//       })
+//       .catch(err => {
+//         console.log('Uh Oh spaghettio');
+//         console.log(err);
+//         res.status('400').json({
+//           current_user: '',
+//           city_users: '',
+//           error: err,
+//         });
+//       });
+// })
 
 app.get("/collections", (req, res) => {
   // let query2 = "SELECT books.name, books.author, books.avg_rating FROM books;";
