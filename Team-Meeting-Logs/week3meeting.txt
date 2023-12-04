@@ -1,0 +1,26 @@
+11/29/23 Notes
+
+Group Update
+Added Book Action Modal
+Added backend frameworks for collections page
+Completed bug fixes with server file
+Completed redesigns for Login and Register pages
+
+
+Individual Updates
+Rayaan:
+    Working on Modal, and Explore Page minor updates
+    Next Week, work on reviews db implementation
+
+Lucas:
+    Profile Page, Helped with User Bug Fix 
+    Next Week, start on users-to-users table
+
+Ibrihim:
+    Finished users object bug fix and login/register redesign
+    Next week, start adding reviews modal addition
+
+Beth and Liz - Worked on backend for collections database
+Liz - Next week: work on UI design for collections page
+Beth - Next week: work on UI design for collections page
+
