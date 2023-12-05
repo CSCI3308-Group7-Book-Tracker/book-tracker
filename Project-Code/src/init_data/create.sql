@@ -67,3 +67,11 @@ CREATE TABLE images_to_books (
   FOREIGN KEY (image_id) REFERENCES images (image_id),
   FOREIGN KEY (book_id) REFERENCES books (book_id)
 );
+
+DROP TABLE IF EXISTS users_to_friends CASCADE;
+CREATE TABLE users_to_friends (
+  user_id INT NOT NULL,
+  friend_id INT NOT NULL,
+  FOREIGN KEY (friend_id) REFERENCES users (user_id),
+  FOREIGN KEY (user_id) REFERENCES users (user_id)
+);
