@@ -112,7 +112,7 @@ app.post('/login', async (req,res) => {
             req.session.user = user;
           
             req.session.save();
-            res.redirect('/explore');
+            res.render("pages/explore", {user: req.session.user, books:[]});
           } else {
             res
               .status(401)
@@ -176,7 +176,7 @@ app.get("/logout", (req, res) => {
 
 //render explore page initially
 app.get("/explore", (req, res) => {
-  res.render("pages/explore",{books:[]});
+  res.render("pages/explore", {user: req.session.user, books:[]});
 });
 
 // explore page external api call
@@ -197,12 +197,12 @@ app.post('/explore', auth, async (req, res)=>{
   })
     .then(results => {
       console.log(results); // the results will be displayed on the terminal if the docker containers are running 
-      res.render('pages/explore', {books: results.data.items});
+      res.render('pages/explore', {user: req.session.user, books: results.data.items});
     })
     .catch(error => {
       // Handle errors
       console.log(error);
-      res.render('pages/explore', {books: []});
+      res.render('pages/explore', {user: req.session.user, books: []});
     });
 
 });
@@ -219,15 +219,12 @@ app.post("/addBook", auth, async (req, res)=>{
     })
   
   })
+})
 
-// //then:
-// let query1 = "INSERT INTO users_to_books (user_id, book_id) values ($1, $2);";
-// //will get user id from ses var and book id from returned value
-
-// let query2 = "INSERT INTO images (image_url) values ($1) RETURNING *;";
-
-// //then:
-// let query3 = "INSERT INTO images_to_books (book_id, image_id) values ($1, $2);";
+app.post("/addReview", auth, async (req, res) => {
+  console.log(req.body);
+  let query = "INSERT INTO reviews (user_id, book_id, review) values ($1, $2, $3) RETURNING * ;";
+  db.any(query, [req.session.user.id, req.body.bookId, req.body.reviewText])
 })
 
 app.get('/Top3', function (req, res)
@@ -270,7 +267,7 @@ app.get("/collections", (req, res) => {
      // as shown below
      //QUERY 
            .then(data => {
-       res.render('pages/collections', {books: data});
+       res.render('pages/collections', {user: req.session.user, books: data});
      })
  
  });

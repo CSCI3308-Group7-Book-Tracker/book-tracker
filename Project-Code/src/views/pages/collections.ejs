@@ -1,35 +1,72 @@
+<!-- Your EJS template file -->
+
 <%- include ('../partials/header') %> 
 <%- include ('../partials/menu') %>
 
 <main>
     <title>Collections</title>
-  <div class="container mx-auto row">
-    <!-- THE REST OF YOUR HTML CODE GOES HERE -->
+    <div class="container mx-auto row">
+        <!-- THE REST OF YOUR HTML CODE GOES HERE -->
 
         <div class="col" style="width:fit-content">
             <div id="event-cards">
-                <%if (books) {  %>
-                    <% books.forEach(result=>{%>
+                <% if (books) {  %>
+                    <% books.forEach(function (result, index) { %>
+                        <!-- Modal -->
+                        <div class="modal fade" id="bookDetails<%= index %>" tabindex="-1" aria-labelledby="bookDetailsLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="modalTitle"><%= result?.name || 'N/A' %></h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body" id="modalBody">
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <img class="img-fluid mx-auto d-block" src="<%= result?.img_url || 'path/to/placeholder-image.jpg' %>">
+                                            </div>
+                                            <div class="col-8">
+                                                <form action="/addReview" method="POST" id="combinedReviewForm">
+                                                    <div>
+                                                        <label for="reviewText" class="form-label">Add your review:</label>
+                                                        <textarea id="reviewText" name="reviewText" placeholder="Write your review here"></textarea>
+                                                    </div>
+                                                    <input type="hidden" name="bookId" value="<%= result?.book_id %>">
+                                                    <input type="hidden" name="userId" value="<%= user?.user_id %>">
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary" form="combinedReviewForm">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Content -->
                         <div class="card" style="display: inline-block; width: 200px; margin: 10px;">
                             <img src=<%-result.img_url %> class="card-img-top" alt="Cover not found" height="250px">
                             <div class="column"> 
-                            <div class="card-body">
-                              <p class="card-title"><%-result.name %></p>
-                              <p class="card-text"><%- result.author%></p>
+                                <div class="card-body">
+                                    <p class="card-title"><%-result.name %></p>
+                                    <p class="card-text"><%- result.author%></p>
+                                    <button type="button" class="btn btn-primary" 
+                                        data-bs-toggle="modal" data-bs-target="#bookDetails<%= index %>"
+                                        data-index="<%= index %>">
+                                        Add Review
+                                    </button>
+                                </div>
                             </div>
-                          </div>
                         </div>
+                        <!-- End of Card Content -->
 
                     <%})%>
                 <%} %>
-
-      </div>
-  </div>
-</td>
-
-
-        
-  </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 <%- include ('../partials/footer') %>
