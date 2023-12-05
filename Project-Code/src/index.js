@@ -215,6 +215,7 @@ app.post("/addBook", auth, async (req, res)=>{
     db.any("INSERT INTO users_to_books (user_id, book_id, finished) values ($1, $2, TRUE);", [req.session.user.id, data[0].book_id]).then(data2 => {
       db.any("UPDATE users SET books_read = books_read + 1 WHERE users.user_id = $1 RETURNING * ;", [req.session.user.id]).then(data3 => {
        console.log(data3);
+       console.log("book added");
       }) 
     })
   
@@ -270,6 +271,7 @@ app.get("/collections", (req, res) => {
      // as shown below
      //QUERY 
            .then(data => {
+            console.log(data);
        res.render('pages/collections', {books: data});
      })
  
