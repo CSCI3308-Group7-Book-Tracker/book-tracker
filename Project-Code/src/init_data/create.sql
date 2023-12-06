@@ -37,3 +37,11 @@ CREATE TABLE users_to_books (
   FOREIGN KEY (user_id) REFERENCES users (user_id),
   FOREIGN KEY (isbn) REFERENCES books (isbn)
 );
+
+DROP TABLE IF EXISTS users_to_friends CASCADE;
+CREATE TABLE users_to_friends (
+  user_id INT NOT NULL,
+  friend_id INT NOT NULL,
+  FOREIGN KEY (friend_id) REFERENCES users (user_id),
+  FOREIGN KEY (user_id) REFERENCES users (user_id)
+);
