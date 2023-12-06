@@ -75,17 +75,17 @@
   <p style="font-weight: bold; font-size: 18px;">Reviews: </p><br>
   <% if (item && item.reviews) {
       item.reviews.forEach(function(review) { %>
-        <div class="row" style="margin-bottom: 10px;">
+        <div class="row" style="margin-bottom: 10px; margin-left: 10px;">
           <div class="col-4">
-            <p style="font-weight: bold; white-space: nowrap;">Username:</p>
+            <p style="font-weight: bold;">Username:</p>
             <p style="white-space: nowrap;"><%= review.username %> </p>
           </div>
           <div class="col-8">
             <p style="font-weight: bold;">Review:</p>
             <p><%= review.reviewText %>
-              <span style="color: grey; font-size: 10px; white-space: nowrap; word-break: break-word;"> 
+              <div style="color: grey; font-size: 10px; word-break: break-word;"> 
                 <%= review.reviewDate %> 
-              </span>
+              </div>
             </p>
           </div>
         </div>

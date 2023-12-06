@@ -200,7 +200,7 @@ app.post('/explore', auth, async (req, res) => {
 
     const books = results.data.items;
 
-    // Use Promise.all to wait for all reviews to be fetched
+    // use Promise.all to wait for all reviews to be fetched
     const booksWithReviews = await Promise.all(
       books.map(async (book) => {
         const isbn = book?.volumeInfo?.industryIdentifiers?.[0]?.identifier;
