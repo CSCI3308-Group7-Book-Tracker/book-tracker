@@ -1,13 +1,11 @@
-<!-- Your EJS template file -->
-
 <%- include ('../partials/header') %> 
 <%- include ('../partials/menu') %>
 
 <main>
-    <title>Collections</title>
+    <div class="container d-flex flex-column justify-content-center align-items-center my-5">
+        <div class="col"><%- include ('../partials/message') %></div>
+    </div>
     <div class="container mx-auto row">
-        <!-- THE REST OF YOUR HTML CODE GOES HERE -->
-
         <div class="col" style="width:fit-content">
             <div id="event-cards">
                 <% if (books) {  %>
@@ -26,20 +24,20 @@
                                                 <img class="img-fluid mx-auto d-block" src="<%= result?.img_url || 'path/to/placeholder-image.jpg' %>">
                                             </div>
                                             <div class="col-8">
-                                                <form action="/addReview" method="POST" id="combinedReviewForm">
-                                                    <div>
+                                                <form action="/addReview" method="POST" id="combinedReviewForm<%= index %>">
+                                                    <div class="mb-3">
                                                         <label for="reviewText" class="form-label">Add your review:</label>
-                                                        <textarea id="reviewText" name="reviewText" placeholder="Write your review here"></textarea>
+                                                        <br>
+                                                        <textarea id="reviewText" name="reviewText" class="form-control w-100" placeholder="Write your review here"></textarea>
                                                     </div>
-                                                    <input type="hidden" name="bookId" value="<%= result?.book_id %>">
-                                                    <input type="hidden" name="userId" value="<%= user?.user_id %>">
+                                                    <input type="hidden" name="bookId" value="<%= result?.isbn %>">
                                                 </form>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary" form="combinedReviewForm">Submit</button>
+                                        <button type="submit" class="btn btn-primary" form="combinedReviewForm<%= index %>">Submit</button>
                                     </div>
                                 </div>
                             </div>
@@ -60,7 +58,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- End of Card Content -->
 
                     <%})%>
                 <%} %>

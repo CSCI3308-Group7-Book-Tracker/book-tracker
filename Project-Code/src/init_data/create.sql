@@ -9,42 +9,31 @@ CREATE TABLE IF NOT EXISTS users (
 
 DROP TABLE IF EXISTS books CASCADE;
 CREATE TABLE IF NOT EXISTS books (
-  book_id SERIAL PRIMARY KEY NOT NULL,
   name VARCHAR(100),
   genre VARCHAR(100),
   author VARCHAR(100),
-  isbn VARCHAR(100),
+  isbn VARCHAR(100) PRIMARY KEY,
   description VARCHAR(10000),
   num_pages VARCHAR(20),
   year_published VARCHAR(50),
-  img_url VARCHAR(500),
-  avg_rating DECIMAL 
+  img_url VARCHAR(500)
 );
 
 DROP TABLE IF EXISTS reviews CASCADE;
 CREATE TABLE IF NOT EXISTS reviews (
   review_id SERIAL PRIMARY KEY NOT NULL,
   user_id INT NOT NULL,
-  book_id INT NOT NULL,
+  isbn VARCHAR(100) NOT NULL,
   review VARCHAR(200),
   review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users (user_id),
-  FOREIGN KEY (book_id) REFERENCES books (book_id)
-);
-
-DROP TABLE IF EXISTS books_to_reviews CASCADE;
-CREATE TABLE books_to_reviews (
-  book_id INT NOT NULL,
-  review_id INT NOT NULL,
-  FOREIGN KEY (book_id) REFERENCES books (book_id),
-  FOREIGN KEY (review_id) REFERENCES reviews (review_id)
+  FOREIGN KEY (isbn) REFERENCES books (isbn)
 );
 
 DROP TABLE IF EXISTS users_to_books CASCADE;
 CREATE TABLE users_to_books (
   user_id INT NOT NULL,
-  book_id INT NOT NULL,
+  isbn VARCHAR(100) NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users (user_id),
-  FOREIGN KEY (book_id) REFERENCES books (book_id),
-  finished BOOLEAN NOT NULL
+  FOREIGN KEY (isbn) REFERENCES books (isbn)
 );

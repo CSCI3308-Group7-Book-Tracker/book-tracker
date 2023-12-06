@@ -51,6 +51,8 @@ const user = {
   reviews_left: undefined
 };
 
+var books = [];
+
 // TODO - Include your API routes here
 app.get('/', (req, res) => {
     res.redirect('/welcome');
@@ -180,96 +182,149 @@ app.get("/explore", (req, res) => {
 });
 
 // explore page external api call
-
-app.post('/explore', auth, async (req, res)=>{
-  axios({
-    url: `https://www.googleapis.com/books/v1/volumes`,
-    method: 'GET',
-    dataType: 'json',
-    headers: {
-      'Accept-Encoding': 'application/json',
-    },
-    params: {
-      key: process.env.API_KEY,
-      q: req.body.title, //this will be passed in by the form
-      maxsize: 10 // you can choose the number of events you would like to return
-    },
-  })
-    .then(results => {
-      console.log(results); // the results will be displayed on the terminal if the docker containers are running 
-      res.render('pages/explore', {user: req.session.user, books: results.data.items});
-    })
-    .catch(error => {
-      // Handle errors
-      console.log(error);
-      res.render('pages/explore', {user: req.session.user, books: []});
+app.post('/explore', auth, async (req, res) => {
+  try {
+    const results = await axios({
+      url: `https://www.googleapis.com/books/v1/volumes`,
+      method: 'GET',
+      dataType: 'json',
+      headers: {
+        'Accept-Encoding': 'application/json',
+      },
+      params: {
+        key: process.env.API_KEY,
+        q: req.body.title,
+        maxsize: 10,
+      },
     });
 
+    const books = results.data.items;
+
+    // Use Promise.all to wait for all reviews to be fetched
+    const booksWithReviews = await Promise.all(
+      books.map(async (book) => {
+        const isbn = book?.volumeInfo?.industryIdentifiers?.[0]?.identifier;
+        const reviews = await getReviews(isbn);
+        return { ...book, reviews };
+      })
+    );
+
+    res.render('pages/explore', { user: req.session.user, books: booksWithReviews });
+  } catch (error) {
+    console.error("Error fetching books: ", error);
+    res.render('pages/explore', { user: req.session.user, books: [] });
+  }
 });
 
 app.post("/addBook", auth, async (req, res)=>{
-  let query = "INSERT INTO books (name, author, isbn, description, num_pages, year_published, img_url) values ($1, $2, $3, $4, $5, $6, $7) RETURNING *;";
-  let curr_id = 0;
-  db.any(query, [req.body.title, req.body.Author, req.body.ISBN, req.body.description, req.body.page_count, req.body.date, req.body.img_url])
+  let query = `INSERT INTO books (name, author, isbn, description, num_pages, year_published, img_url)
+                VALUES ($1, $2, $3, $4, $5, $6, $7) 
+                ON CONFLICT (isbn) DO NOTHING
+                RETURNING *;`;
+  db.any(query, [
+    req.body.title,
+    req.body.Author,
+    req.body.ISBN,
+    req.body.description,
+    req.body.page_count,
+    req.body.date,
+    req.body.img_url
+  ])
   .then(data => {
-    db.any("INSERT INTO users_to_books (user_id, book_id, finished) values ($1, $2, TRUE);", [req.session.user.id, data[0].book_id]).then(data2 => {
-      db.any("UPDATE users SET books_read = books_read + 1 WHERE users.user_id = $1 RETURNING * ;", [req.session.user.id]).then(data3 => {
-       console.log(data3);
-      }) 
-    })
-  
+    // if the book inserted
+    if (data.length > 0) {
+      // check if user/isbn pair in users_to_books relation
+      // insert connection only if not already present
+      db.any("SELECT * FROM users_to_books WHERE user_id = $1 AND isbn = $2;", [req.session.user.id, data[0].isbn])
+        .then(data => {
+          if (data.length === 0) {
+            db.any("INSERT INTO users_to_books (user_id, isbn) values ($1, $2);", [req.session.user.id, req.body.ISBN]).then(data2 => {
+              db.any("UPDATE users SET books_read = books_read + 1 WHERE users.user_id = $1 RETURNING * ;", [req.session.user.id]);
+            });
+          } else {
+            console.log("User already has this book in collection. Ignoring Duplicate.");
+          }
+        })
+    } else {
+      // book already exists
+      console.log("Book with ISBN already exists. Ignoring duplicate.");
+      // utilizes isbn from book that has already been added to books relation
+      // check if user/isbn pair in users_to_books relation
+      // insert connection only if not already present
+      db.any("SELECT * FROM users_to_books WHERE user_id = $1 AND isbn = $2;", [req.session.user.id, req.body.ISBN])
+        .then(data => {
+          if (data.length === 0) {
+            db.any("INSERT INTO users_to_books (user_id, isbn) values ($1, $2);", [req.session.user.id, req.body.ISBN]).then(data2 => {
+              db.any("UPDATE users SET books_read = books_read + 1 WHERE users.user_id = $1 RETURNING * ;", [req.session.user.id]);
+            });
+          } else {
+            console.log("User already has this book in collection. Ignoring Duplicate.");
+          }
+        })
+    }
   })
-})
+  .catch(error => {
+    // Handle other errors
+    console.error("Error adding book:", error);
+    res.status(500).send("Internal Server Error");
+  });
+});
+
+async function getReviews(isbn) {
+  try {
+    const reviews = await db.any(
+      `SELECT u.username, r.review, r.review_date
+        FROM reviews r 
+        INNER JOIN users u ON r.user_id = u.user_id 
+        WHERE isbn = $1;`,
+      [isbn]);
+      return reviews.map(review => ({
+        username: review.username,
+        reviewText: review.review,
+        reviewDate: review.review_date
+      }));
+  } catch (err) {
+    console.error("Error fetching reviews: ", err);
+    return [];
+  }
+};
 
 app.post("/addReview", auth, async (req, res) => {
   console.log(req.body);
-  let query = "INSERT INTO reviews (user_id, book_id, review) values ($1, $2, $3) RETURNING * ;";
-  db.any(query, [req.session.user.id, req.body.bookId, req.body.reviewText])
-})
 
-app.get('/Top3', function (req, res)
-{
-    const query =
-        `select books.book_id, books.name from books 
-        INNER JOIN books_to_reviews
-        ON books.book_id = books_to_reviews.book_id 
-        INNER JOIN reviews 
-        ON books_to_reviews.review_id = reviews.review_id 
-        ORDER BY ratings DESC LIMIT 3`
-    db.any(query)
-    .then(function (data) {
-        res.status(201).json({
-          status: 'success',
-          data: data,
-          message: 'Your reviews are listed below: ',
-        });
-      })
-      .catch(err => {
-        console.log('Uh Oh spaghettio');
-        console.log(err);
-        res.status('400').json({
-          current_user: '',
-          city_users: '',
-          error: err,
-        });
-      });
-})
+  // Use the found values in your query
+  let query = "INSERT INTO reviews (user_id, isbn, review) VALUES ($1, $2, $3) RETURNING * ;";
+  db.any(query, [req.session.user.id, req.body.bookId, req.body.reviewText])
+    .then(data => {
+      // Handle success
+      db.any("UPDATE users SET reviews_left = reviews_left + 1 WHERE users.user_id = $1 RETURNING * ;", [req.session.user.id]);
+      console.log("Review added:", data);
+      res
+        .status(200)
+        .render('pages/collections', {
+          user: req.session.user,
+          books: req.session.books,
+          message: 'Review Left Successfully, View Reviews on Books in the Explore Page!'
+        }
+      );
+    })
+    .catch(error => {
+      // Handle error
+      console.error("Error adding review:", error);
+      res.status(500).send("Internal Server Error");
+    });
+});
+
 
 app.get("/collections", (req, res) => {
-  // let query2 = "SELECT books.name, books.author, books.avg_rating FROM books;";
-  // let query2 = "SELECT books.name, books.author, books.avg_rating FROM books JOIN users_to_books ON books.book_id = users_to_books.book_id JOIN users ON users.user_id = users_to_books.user_id WHERE username = \'admin\'";
-  let query2 = "Select books.name, books.book_id, books.author, books.avg_rating, books.img_url from books Join users_to_books On books.book_id = users_to_books.book_id Join users On users_to_books.user_id = users.user_id where users.user_id = $1;";
-  //let query2 = "Select books.name, books.book_id, books.author, books.avg_rating from books;"; 
+  let query2 = "Select books.name, books.isbn, books.author, books.img_url from books Join users_to_books On books.isbn = users_to_books.isbn Join users On users_to_books.user_id = users.user_id where users.user_id = $1;";
   db.any(query2, [req.session.user.id])
-
-     // if query execution succeeds
-     // query results can be obtained
-     // as shown below
-     //QUERY 
-           .then(data => {
-       res.render('pages/collections', {user: req.session.user, books: data});
-     })
- 
+    .then(data => {
+      books = data;
+      req.session.books = books;
+      req.session.save();
+      res.render('pages/collections', {user: req.session.user, books: req.session.books});
+    })
  });
 
 // *****************************************************
