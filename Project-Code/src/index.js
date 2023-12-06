@@ -4,6 +4,7 @@
 
 const express = require('express'); // To build an application server or API
 const app = express();
+const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcryptjs'); //  To hash passwords
@@ -24,6 +25,10 @@ databaseModule.initializeDatabase();
 
 app.set('view engine', 'ejs'); // set the view engine to EJS
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
+// Define the path to your static files (css, img, etc.)
+const staticPath = path.join(__dirname, 'resources');
+// Serve static files using express.static middleware
+app.use(express.static(staticPath));
 
 // initialize session variables
 app.use(
@@ -55,7 +60,7 @@ var books = [];
 
 // TODO - Include your API routes here
 app.get('/', (req, res) => {
-    res.redirect('/welcome');
+  res.redirect('/welcome');
 })
 
 app.get('/welcome', (req, res) => {
