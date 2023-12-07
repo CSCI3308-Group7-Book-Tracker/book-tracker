@@ -4,11 +4,13 @@ CREATE TABLE IF NOT EXISTS users (
   username VARCHAR(100) UNIQUE NOT NULL,
   password CHAR(60) NOT NULL,
   books_read INT NOT NULL,
-  reviews_left INT NOT NULL
+  reviews_left INT NOT NULL,
+  followers INT DEFAULT 0,
+  following INT DEFAULT 0
 );
 
 DROP TABLE IF EXISTS books CASCADE;
-CREATE TABLE IF NOT EXISTS books (
+CREATE TABLE IF NOT EXISTS books ( 
   name VARCHAR(100),
   genre VARCHAR(100),
   author VARCHAR(100),

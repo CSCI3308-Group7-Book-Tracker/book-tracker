@@ -163,15 +163,77 @@ const auth = (req, res, next) => {
 // Authentication Required
 app.use(auth);
 
-// we will add more main page components (pages that require a logged in user) after this auth middleware component.
+// Helper function to fetch profile data
+async function fetchProfileData(userId) {
+  const userData = await db.oneOrNone("SELECT * FROM users WHERE user_id = $1", [userId]);
 
-app.get('/profile', (req,res) => {
-  db.any("SELECT * FROM users WHERE user_id = $1", [req.session.user.id])
-    .then(data => {
-      let user_input = data[0];
-      res.render('pages/profile', {user_input});
-  });
+  if (!userData) {
+    console.error("User not found");
+    return null;
+  }
 
+  const booksData = await db.any(`
+    SELECT b.name
+    FROM books b
+    INNER JOIN users_to_books utb ON b.isbn = utb.isbn
+    WHERE utb.user_id = $1;
+  `, [userId]);
+
+  const books_read_titles = booksData.map(book => book.name);
+
+  const reviewsData = await db.any(`
+    SELECT r.review, b.name
+    FROM reviews r
+    INNER JOIN books b ON r.isbn = b.isbn
+    WHERE user_id = $1
+    ORDER BY review_date DESC
+    LIMIT 3;
+  `, [userId]);
+
+  const recent_review = reviewsData.map(review => review.review) || [];
+  const recent_book = reviewsData.map(book => book.name) || [];
+
+  const followingData = await db.any(`
+    SELECT u.user_id, u.username
+    FROM users_to_friends utf
+    INNER JOIN users u ON utf.friend_id = u.user_id
+    WHERE utf.user_id = $1
+  `, [userId]);
+
+  const followerData = await db.any(`
+  SELECT u.user_id, u.username
+  FROM users_to_friends utf
+  INNER JOIN users u ON utf.user_id = u.user_id
+  WHERE utf.friend_id = $1
+`, [userId])
+
+  return { ...userData, books_read_titles, recent_review, recent_book, following_arr: followingData, follower_arr: followerData };
+}
+
+// Profile route handler
+app.get('/profile/:id?', async (req, res) => {
+  try {
+    let userId = req.params.id || req.session.user.id;
+
+    // Fetch user information using the helper function
+    const user_input = await fetchProfileData(userId);
+
+    if (user_input !== null) {
+      // Update user_input in the session
+      req.session.user_input = user_input;
+      req.session.save();
+
+      console.log(req.session.user_input);
+      res.render('pages/profile', { user_input: req.session.user_input });
+    } else {
+      // Handle the case where the user is not found
+      console.error("User not found");
+      res.status(404).send("User not found");
+    }
+  } catch (error) {
+    console.error("Error fetching user information:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 app.get("/logout", (req, res) => {
@@ -210,7 +272,7 @@ app.post('/explore', auth, async (req, res) => {
     const booksWithReviews = await Promise.all(
       books.map(async (book) => {
         const isbn = book?.volumeInfo?.industryIdentifiers?.[0]?.identifier;
-        const reviews = await getReviews(isbn);
+        const reviews = await getReviews(req, isbn);
         return { ...book, reviews };
       })
     );
@@ -284,18 +346,48 @@ app.post("/addBook", auth, async (req, res)=>{
   });
 });
 
-async function getReviews(isbn) {
+/* [
+    {
+      username: '', 
+      review: '',
+      review_date: 'TIMESTAMP'
+    },
+    {
+      username: '', 
+      review: '',
+      review_date: 'TIMESTAMP',
+    },
+  ]
+  */
+async function getReviews(req, isbn) {
   try {
     const reviews = await db.any(
-      `SELECT u.username, r.review, r.review_date
-        FROM reviews r 
-        INNER JOIN users u ON r.user_id = u.user_id 
-        WHERE isbn = $1;`,
-      [isbn]);
+      `SELECT
+        u.user_id,
+        u.username,
+        r.review,
+        r.review_date,
+        CASE
+            WHEN u.user_id = $1 THEN false -- Same user, cannot follow
+            WHEN EXISTS (
+                SELECT 1
+                FROM users_to_friends utf
+                WHERE utf.user_id = $1 AND utf.friend_id = u.user_id
+            ) THEN false -- Already a friend, cannot follow
+            ELSE true -- Can follow
+        END AS can_follow
+      FROM
+          reviews r
+          INNER JOIN users u ON r.user_id = u.user_id
+      WHERE
+          r.isbn = $2;`,
+      [req.session.user.id, isbn]);
       return reviews.map(review => ({
+        user_id: review.user_id,
         username: review.username,
         reviewText: review.review,
-        reviewDate: review.review_date
+        reviewDate: review.review_date,
+        can_follow: review.can_follow
       }));
   } catch (err) {
     console.error("Error fetching reviews: ", err);
@@ -304,8 +396,6 @@ async function getReviews(isbn) {
 };
 
 app.post("/addReview", auth, async (req, res) => {
-  console.log(req.body);
-
   // Use the found values in your query
   let query = "INSERT INTO reviews (user_id, isbn, review) VALUES ($1, $2, $3) RETURNING * ;";
   db.any(query, [req.session.user.id, req.body.bookId, req.body.reviewText])
@@ -329,6 +419,51 @@ app.post("/addReview", auth, async (req, res) => {
     });
 });
 
+app.post("/followUser", auth, async (req, res) => {
+  try {
+    const followerId = req.session.user.id;
+    const followingId = req.body.user_id;
+
+    // Check if the user friend connection already exists
+    const existingConnection = await db.any(
+      'SELECT 1 FROM users_to_friends WHERE user_id = $1 AND friend_id = $2',
+      [followerId, followingId]
+    );
+
+    if (existingConnection.length === 0 && followerId != followingId) {
+      // If the connection doesn't exist, insert a new record
+      await db.any(
+        'INSERT INTO users_to_friends (user_id, friend_id) VALUES ($1, $2)',
+        [followerId, followingId]
+      );
+
+      // Update follower's following count
+      await db.any(
+        'UPDATE users SET following = following + 1 WHERE user_id = $1',
+        [followerId]
+      );
+
+      // Update following user's followers count
+      await db.any(
+        'UPDATE users SET followers = followers + 1 WHERE user_id = $1',
+        [followingId]
+      );
+
+      const user_input = await fetchProfileData(followerId);
+
+      req.session.user_input = user_input;
+      req.session.save();
+      console.log(req.session.user_input);
+      res.render('pages/profile', {user_input: req.session.user_input, message: "Followed successfully!"});
+    } else {
+      // If the connection already exists, return a message indicating that
+      res.render('pages/profile', {user_input: req.session.user_input, error: true, message: "Cannot Follow. Either already following, or attempt to follow oneself."});
+    }
+  } catch (error) {
+    console.error('Error following user:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
 
 app.get("/collections", (req, res) => {
   let query2 = "Select books.name, books.isbn, books.author, books.img_url from books Join users_to_books On books.isbn = users_to_books.isbn Join users On users_to_books.user_id = users.user_id where users.user_id = $1;";

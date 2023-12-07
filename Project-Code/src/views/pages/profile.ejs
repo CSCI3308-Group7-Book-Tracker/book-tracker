@@ -4,23 +4,88 @@
 <main>
     <div class="container">
       <br>
+        <div><%- include ('../partials/message') %></div>
+        <div class="header-container">
         <h1><%=user_input.username%>'s Profile:</h1>
-                <table class="table table-striped table-bordered">
-                    <thead>
-                      <tr class="table-dark" style="opacity:85%">
-                        <th scope="col">Books Read</th>
-                        <th scope="col">Reviews Left</th>
-                        <th scope="col">Favorite Genre</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr class="table-warning" style="opacity:70%">
-                        <td><strong><%=user_input.books_read || 0%></strong></td>
-                        <td><strong><%=user_input.reviews_left || 0%></strong></td>
-                        <td><strong><%=user_input.favorite_genre || "Undecided"%></strong></td>
-                      </tr>
-                    </tbody>
-                  </table>
+          <!-- Add Follow/Unfollow Button -->
+          <form action = "/followUser" method = "POST" style="margin-left: 10px;"> 
+            <input type="hidden" name="user_id" value="<%= user_input.user_id ?? -1 %>">
+            <button type="submit" class="btn btn-primary">
+                Follow
+             </button> </form> 
+             </div>
+                <br>
+                  <div class="container">
+                    <div class="row">
+                      <div class="col-md-3">
+                        <div class="card" style="width: 18rem; height: 30rem;">
+                          <div class="card-body" style="background-color:rgb(255, 248, 224)">
+                            <h5 class="card-title" style="font-size: 28px"><%=user_input.books_read || 0%></h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Books Read</h6><hr>
+                            <ul>
+                              <% if (user_input.books_read_titles && user_input.books_read_titles.length > 0) { %>
+                                <% user_input.books_read_titles.forEach(title => { %>
+                                  <li><%= title %></li>
+                                <% }); %>
+                              <% } else { %>
+                                <li>No books read yet.</li>
+                              <% } %>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="col-md-3">
+                        <div class="card" style="width: 18rem; height: 30rem;">
+                          <div class="card-body" style="background-color:rgb(255, 248, 224)">
+                            <h5 class="card-title" style="font-size: 28px"><%= user_input.reviews_left || 0 %></h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Reviews Left</h6><hr>
+                            <div class="card-text">
+                              Most Recent Reviews: <br><br>
+                              <% for (let i = 0; i < user_input.recent_review.length; i++) { %>
+                                <div>
+                                  &nbsp;&nbsp; "<%= user_input.recent_review[i] %>" &nbsp;&nbsp; | &nbsp;&nbsp;<%= user_input.recent_book[i] %>
+                                </div><br><br>
+                              <% } %>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  
+                      <div class="col-md-3">
+                        <div class="card" style="width: 18rem; height: 30rem;">
+                          <div class="card-body" style="background-color:rgb(255, 248, 224)">
+                            <h5 class="card-title" style="font-size: 28px"><%=user_input.followers || 0%></h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Followers</h6><hr>
+                            <p class="card-text">
+                              <% for (let i = 0; i < user_input.follower_arr.length; i++) { %>
+                                <div>
+                                  &nbsp;&nbsp;
+                                  <a href="/profile/<%= user_input.follower_arr[i].user_id %>" style="color:#d88339"><%= user_input.follower_arr[i].username %></a>
+                                </div>
+                              <% } %>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                  
+                      <div class="col-md-3">
+                        <div class="card" style="width: 18rem; height: 30rem;">
+                          <div class="card-body" style="background-color:rgb(255, 248, 224)">
+                            <h5 class="card-title" style="font-size: 28px"><%=user_input.following || 0%></h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Following</h6><hr>
+                            <% for (let i = 0; i < user_input.following_arr.length; i++) { %>
+                              <div>
+                                &nbsp;&nbsp;
+                                <a href="/profile/<%= user_input.following_arr[i].user_id %>" style="color:#d88339"><%= user_input.following_arr[i].username %></a>
+                              </div>
+                            <% } %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
     </div>
 </main>
 

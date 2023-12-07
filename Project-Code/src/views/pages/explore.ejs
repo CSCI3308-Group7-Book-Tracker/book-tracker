@@ -104,11 +104,11 @@
         <div class="row" style="margin-bottom: 10px; margin-left: 10px;">
           <div class="col-4">
             <hr>
-            <p style="white-space: nowrap;"><%= review.username %> </p>
+            <a href="/profile/<%= review.user_id %>" style="color:#d88339"><%= review.username %></a>
           </div>
           <div class="col-8">
             <hr>
-            <p><%= review.reviewText %>
+            <p style="word-wrap: break-word;"><%= review.reviewText %>
               <div style="color: grey; font-size: 10px; word-break: break-word;"> 
                 <%= review.reviewDate %> 
               </div>
