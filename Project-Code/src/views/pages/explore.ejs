@@ -14,10 +14,27 @@
     text-align: center;
     font-size: 1.5em;
   }
+
+  .modal-header {
+    background-color: #bd7434;
+  }
+
+  .modal-title {
+    color: #ffffff;
+  }
+
+  .modal-body {
+    background-color: blanchedalmond;
+  }
+
+  .modal-footer {
+    background-color: #bd7434;
+  }
 </style>
 <main>
   <div class="container">
     <div><%- include ('../partials/message') %></div>
+    <br><br>
     <h1>Explore</h1>
     <div id="search_bar" class="mt-3">
       <form action="/explore" method="POST">

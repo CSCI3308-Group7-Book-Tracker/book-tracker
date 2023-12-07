@@ -1,11 +1,31 @@
 <%- include ('../partials/header') %> 
 <%- include ('../partials/menu') %>
 
+<style>
+    .modal-header {
+    background-color: #bd7434;
+  }
+
+  .modal-title {
+    color: #ffffff;
+  }
+
+  .modal-body {
+    background-color: blanchedalmond;
+  }
+
+  .modal-footer {
+    background-color: #bd7434;
+  }
+
+  .card-body {
+    background-color: rgb(255, 248, 224);
+  }
+</style>
 <main>
-    <div class="container d-flex flex-column justify-content-center align-items-center my-5">
-        <div class="col"><%- include ('../partials/message') %></div>
-    </div>
     <div class="container mx-auto row">
+        <div><%- include ('../partials/message') %></div>
+        <br>
         <div class="col" style="width:fit-content">
             <div id="event-cards">
                 <% if (books) {  %>
