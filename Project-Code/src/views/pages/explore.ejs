@@ -17,6 +17,7 @@
 </style>
 <main>
   <div class="container">
+    <div><%- include ('../partials/message') %></div>
     <h1>Explore</h1>
     <div id="search_bar" class="mt-3">
       <form action="/explore" method="POST">
@@ -73,15 +74,23 @@
                       <!-- Review Section -->
 <div class="row">
   <p style="font-weight: bold; font-size: 18px;">Reviews: </p><br>
+  <div class="row" style="margin-bottom: 10px; margin-left: 10px;">
+    <div class="col-4">
+      <p style="font-weight: bold;">Username:</p>
+    </div>
+    <div class="col-8">
+      <p style="font-weight: bold;">Review:</p>
+    </div>
+  </div>
   <% if (item && item.reviews) {
       item.reviews.forEach(function(review) { %>
         <div class="row" style="margin-bottom: 10px; margin-left: 10px;">
           <div class="col-4">
-            <p style="font-weight: bold;">Username:</p>
+            <hr>
             <p style="white-space: nowrap;"><%= review.username %> </p>
           </div>
           <div class="col-8">
-            <p style="font-weight: bold;">Review:</p>
+            <hr>
             <p><%= review.reviewText %>
               <div style="color: grey; font-size: 10px; word-break: break-word;"> 
                 <%= review.reviewDate %> 

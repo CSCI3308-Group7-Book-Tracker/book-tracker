@@ -57,6 +57,7 @@ const user = {
 };
 
 var books = [];
+var booksWithReviewsSessObj = [];
 
 // TODO - Include your API routes here
 app.get('/', (req, res) => {
@@ -214,6 +215,10 @@ app.post('/explore', auth, async (req, res) => {
       })
     );
 
+    booksWithReviewsSessObj = booksWithReviews;
+    req.session.booksWithReviews = booksWithReviewsSessObj;      
+    req.session.save();
+
     res.render('pages/explore', { user: req.session.user, books: booksWithReviews });
   } catch (error) {
     console.error("Error fetching books: ", error);
@@ -245,9 +250,11 @@ app.post("/addBook", auth, async (req, res)=>{
           if (data.length === 0) {
             db.any("INSERT INTO users_to_books (user_id, isbn) values ($1, $2);", [req.session.user.id, req.body.ISBN]).then(data2 => {
               db.any("UPDATE users SET books_read = books_read + 1 WHERE users.user_id = $1 RETURNING * ;", [req.session.user.id]);
+              res.render('pages/explore', {user: req.session.user, books: req.session.booksWithReviews, message: "Book added successfully to your Collection!"});
             });
           } else {
             console.log("User already has this book in collection. Ignoring Duplicate.");
+            res.render('pages/explore', {user: req.session.user, books: req.session.booksWithReviews, error: true, message: "Book already stored in your Collection."});
           }
         })
     } else {
@@ -261,9 +268,11 @@ app.post("/addBook", auth, async (req, res)=>{
           if (data.length === 0) {
             db.any("INSERT INTO users_to_books (user_id, isbn) values ($1, $2);", [req.session.user.id, req.body.ISBN]).then(data2 => {
               db.any("UPDATE users SET books_read = books_read + 1 WHERE users.user_id = $1 RETURNING * ;", [req.session.user.id]);
+              res.render('pages/explore', {user: req.session.user, books: req.session.booksWithReviews, message: `Book successfully added to your Collection!`});
             });
           } else {
             console.log("User already has this book in collection. Ignoring Duplicate.");
+            res.render('pages/explore', {user: req.session.user, books: req.session.booksWithReviews, error: true, message: "Book already stored in your Collection!"});
           }
         })
     }
