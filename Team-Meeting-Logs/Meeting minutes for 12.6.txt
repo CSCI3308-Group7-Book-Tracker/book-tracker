@@ -1,0 +1,26 @@
+Update meeting minutes and release notes
+
+Ready for presentation
+
+No current issues
+
+Individuals:
+Ibrahim
+Working on styling
+
+Rayaan
+Reviews page
+Edge case bugs 
+Small bugs/stories
+
+Lucas
+Reviews page
+
+Elizabeth
+Collections page progress
+SQL bugs and styling issues
+Writing report
+
+Beth:
+Collections page user progress
+Slideshow
