@@ -12,3 +12,6 @@ instructions:
 
 How to run the tests
 The test cases are set up to run automatically when docker-compose up is used to start the application. The results of the test cases will be displayed to the console, and if there are any errors the user will be informed. 
+
+Link to Deployed Website [INACTIVE]: 
+http://recitation-11-team-07.eastus.cloudapp.azure.com:3000/
